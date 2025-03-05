@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base Styles */
+:root {
+  --color-neon-blue: #00f0ff;
+  --color-neon-purple: #bf00ff;
+  --color-cyber-dark: #0d0d0d;
+  --color-cyber-light: #2d2d2d;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cyber-dark text-white;
+  overflow-x: hidden;
+}
+
+/* Grid Background Pattern */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px 0 var(--color-neon-blue);
+  }
+  50% {
+    box-shadow: 0 0 15px 3px var(--color-neon-blue);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-glowPulse {
+  animation: glowPulse 2s infinite;
+}
