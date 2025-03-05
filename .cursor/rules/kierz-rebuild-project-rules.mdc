@@ -1,0 +1,69 @@
+---
+description: 
+globs: 
+---
+
+# Your rule content
+
+Kierz.io Portfolio Project Rules
+Project Architecture
+
+Maintain the Gatsby single-page application structure with section-based components
+Use React functional components with hooks for all new features
+Follow the established directory structure: components/UI/, components/Sections/, components/Layout/, etc.
+Keep the Hero component as the flagship feature with the interactive particle background
+
+Styling & Design System
+
+Maintain the cyberpunk aesthetic with neon blue (#00f0ff) and purple (#bf00ff) accents on dark backgrounds
+Use Tailwind CSS exclusively for styling with utility classes
+Follow the established color variables defined in global.css
+Preserve the glowing effects and animations that define the cyberpunk theme
+Use the Orbitron font for headings and Inter for body text
+
+Component Development
+
+Ensure all components are responsive with mobile-first approach
+Implement smooth scrolling between sections
+Use proper z-indexing to ensure particle effects don't interfere with UI interactions
+Maintain a consistent fade-in animation pattern for section content
+Implement fallback options for complex features (as done with CyberBackground for particles)
+
+Performance Considerations
+
+Keep particle count reasonable to maintain performance (max 100 particles)
+Implement lazy loading for sections below the fold
+Ensure animations run at 60fps or better
+
+State Management
+
+Use localStorage for persistent user preferences (like username)
+Implement proper error handling, especially for the particle background
+Use React's useEffect for side effects with proper cleanup functions
+
+Build & Deployment
+
+Ensure all code passes Gatsby build process without warnings
+Maintain clean git commits with descriptive messages
+Test changes in development before pushing to main branch
+
+Future Components
+
+Work section: Implement filterable project cards with consistent styling
+About section: Include skills and timeline with animations consistent with cyberpunk theme
+Contact form: Include validation and visual feedback matching design system
+ChatBot component: Simple AI interaction with cyberpunk styling
+
+Technical Constraints
+
+Support modern browsers only (Chrome, Firefox, Safari, Edge)
+Maintain compatibility with react-tsparticles v2.9.3 for the particle background
+Ensure webpack integration works properly with Gatsby's build system
+
+Code Style
+
+Use descriptive variable names that reflect cyberpunk theme when appropriate
+Format code with consistent indentation (2 spaces)
+Place component state definitions at the top of components
+Use async/await for asynchronous operations
+Include console logs for debugging during development but remove before production

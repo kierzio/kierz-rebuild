@@ -1,5 +1,7 @@
+// src/components/layout/index.js 
 import React from "react";
 import Navigation from "../Navigation";
+import EvaChatbot from '../EvaChatbot';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -10,7 +12,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <a href="#intro" className="text-neon-blue font-orbitron text-xl font-bold">
-              Kierz.io
+              kierz.io
             </a>
             <p className="text-gray-400 text-sm mt-1">
               Crafting digital experiences from the future
@@ -18,7 +20,7 @@ const Footer = () => {
           </div>
           
           <div className="text-gray-400 text-sm">
-            &copy; {currentYear} Kierz.io | All rights reserved
+            &copy; {currentYear} kierz.io | All rights reserved
           </div>
         </div>
       </div>
@@ -28,9 +30,12 @@ const Footer = () => {
 
 const Layout = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen bg-cyber-dark">
+    <div className="flex flex-col min-h-screen">
       <Navigation />
-      <main className="flex-grow">{children}</main>
+      <main className="flex-grow">
+        {children}
+      </main>
+      <EvaChatbot />
       <Footer />
     </div>
   );

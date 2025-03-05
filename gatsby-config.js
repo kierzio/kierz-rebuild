@@ -3,8 +3,8 @@
  */
 module.exports = {
     siteMetadata: {
-      title: "Kierz.io - Futuristic Portfolio",
-      description: "Portfolio site showcasing creative digital experiences at the intersection of technology and design",
+      title: "kierz.io",
+      description: "showcasing creative digital experiences at the intersection of technology and design",
       author: "@kierzio",
       siteUrl: "https://kierz.io",
     },
