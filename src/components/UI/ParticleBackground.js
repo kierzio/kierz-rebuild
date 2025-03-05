@@ -1,25 +1,28 @@
 // src/components/UI/ParticleBackground.js
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
 
 const ParticleBackground = () => {
+  const [hasError, setHasError] = useState(false);
+  
   const particlesInit = useCallback(async (engine) => {
-    console.log("Initializing tsParticles");
     try {
       await loadFull(engine);
-      console.log("tsParticles initialized successfully");
     } catch (error) {
       console.error("Failed to initialize tsParticles:", error);
+      setHasError(true);
     }
   }, []);
 
   const particlesLoaded = useCallback(async (container) => {
-    console.log("Particles loaded successfully");
   }, []);
 
+  // Skip rendering if there was an error
+  if (hasError) return null;
+
   return (
-    <div className="absolute inset-0" style={{ zIndex: 0 }}>
+    <div className="absolute inset-0 z-0">
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -55,7 +58,7 @@ const ParticleBackground = () => {
                 enable: true,
                 area: 800,
               },
-              value: 80,
+              value: 50,
             },
             opacity: {
               value: 0.7,

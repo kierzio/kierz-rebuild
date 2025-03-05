@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,7 +41,7 @@ const Navigation = () => {
         </a>
 
         <div className="hidden md:flex space-x-6">
-          {["intro"].map((section) => (
+          {["intro", "about", "projects", "contact"].map((section) => (
             <button
               key={section}
               onClick={() => scrollTo(section)}
@@ -51,12 +52,35 @@ const Navigation = () => {
           ))}
         </div>
 
-        <button className="md:hidden text-white">
+        <button 
+          className="md:hidden text-white"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
           </svg>
         </button>
       </div>
+      
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-cyber-dark/95 backdrop-blur-md py-4 px-4 animate-fadeIn">
+          <div className="flex flex-col space-y-4">
+            {["intro", "about", "projects", "contact"].map((section) => (
+              <button
+                key={section}
+                onClick={() => {
+                  scrollTo(section);
+                  setMobileMenuOpen(false);
+                }}
+                className="text-white hover:text-neon-blue transition-colors duration-300 uppercase tracking-wider font-orbitron text-sm py-2 border-b border-neon-blue/20"
+              >
+                {section === "intro" ? "Home" : section}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

@@ -2,8 +2,8 @@
     "name": "kierz-portfolio",
     "version": "1.0.0",
     "private": true,
-    "description": "Kierz.io Futuristic Portfolio Website",
-    "author": "Kierz.io",
+    "description": "kierz.io",
+    "author": "kierz.io",
     "keywords": [
         "gatsby",
         "portfolio",
@@ -18,6 +18,8 @@
     },
     "dependencies": {
         "autoprefixer": "^10.4.16",
+        "axios": "^1.8.1",
+        "framer-motion": "^12.4.10",
         "gatsby": "^5.13.3",
         "gatsby-plugin-image": "^3.13.1",
         "gatsby-plugin-manifest": "^5.13.1",
@@ -31,6 +33,7 @@
         "react-dom": "^18.2.0",
         "react-helmet": "^6.1.0",
         "react-tsparticles": "^2.9.3",
+        "styled-components": "^6.1.15",
         "tailwindcss": "^3.4.1",
         "tsparticles": "^2.9.3"
     }

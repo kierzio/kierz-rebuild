@@ -1,35 +1,26 @@
 import React, { useState, useEffect } from "react";
 import ParticleBackground from "../../UI/ParticleBackground";
-import CyberBackground from "../../UI/CyberBackground";
 
 const Hero = () => {
   const [useParticles, setUseParticles] = useState(true);
   const [userName, setUserName] = useState("");
   const [typing, setTyping] = useState(true);
   const [text, setText] = useState("");
-  const fullText = userName ? `Welcome back, ${userName}` : "Welcome to the Future";
+  const fullText = userName ? `Welcome to the future, ${userName}` : "Welcome to the Future";
 
-// Add this console log at the top of the component
-console.log("Hero component rendering, useParticles:", useParticles);
+  // Optimize the error handling useEffect in Hero component
+  useEffect(() => {
+    const errorHandler = (error) => {
+      // Instead of console.error, consider a more robust error tracking solution
+      setUseParticles(false);
+    };
 
-// Modify the error handling useEffect
-useEffect(() => {
-  const errorHandler = (error) => {
-    console.error("Particle error detected:", error);
-    setUseParticles(false);
-  };
+    window.addEventListener('error', errorHandler);
 
-  window.addEventListener('error', errorHandler);
-
-  return () => {
-    window.removeEventListener('error', errorHandler);
-  };
-}, []);
-
-// Also add this useEffect for debugging
-useEffect(() => {
-  console.log("useParticles state changed to:", useParticles);
-}, [useParticles]);
+    return () => {
+      window.removeEventListener('error', errorHandler);
+    };
+  }, []);
 
   // Typing effect
   useEffect(() => {
@@ -68,7 +59,7 @@ useEffect(() => {
 
   return (
     <section id="intro" className="h-screen relative flex flex-col items-center justify-center">
-      <ParticleBackground />
+      {useParticles && <ParticleBackground />}
 
       <div className="relative z-10 text-center px-4">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 text-neon-blue font-orbitron">
