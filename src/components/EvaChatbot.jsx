@@ -54,17 +54,19 @@ const EvaChatbot = () => {
     setIsLoading(true);
     
     try {
-      // Make API call to your Python backend
-      const response = await axios.post('https://lab.kierz.io/chat', {
-        message: userMessage.text
+      // Updated API call to match the Flask endpoint format
+      const response = await axios.get('https://lab.kierz.io/', {
+        params: {
+          question: userMessage.text
+        }
       });
       
-      // Add bot response
+      // Add bot response - Flask returns plain text, not JSON
       setMessages(prev => [
         ...prev,
         {
           id: Date.now() + 1,
-          text: response.data.response || "I'm having trouble connecting to my brain. Please try again later.",
+          text: response.data || "I'm having trouble connecting to my brain. Please try again later.",
           isUser: false
         }
       ]);
@@ -171,7 +173,7 @@ const EvaChatbot = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px) scale(0.9); }
           to { opacity: 1; transform: translateY(0) scale(1); }
