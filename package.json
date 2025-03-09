@@ -36,5 +36,10 @@
         "styled-components": "^6.1.15",
         "tailwindcss": "^3.4.1",
         "tsparticles": "^2.9.3"
+    },
+    "resolutions": {
+        "gatsby/path-to-regexp": "^6.2.1",
+        "gatsby/cookie": "^0.7.0",
+        "css-minimizer-webpack-plugin/serialize-javascript": "^6.0.2"
     }
 }
