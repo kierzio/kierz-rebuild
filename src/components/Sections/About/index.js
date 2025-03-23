@@ -15,33 +15,65 @@ const About = () => {
           
           <div className="space-y-8 animate-fadeIn">
             <p className="text-lg text-gray-300 leading-relaxed">
-            I'm Kieran, an <span className="text-[var(--color-neon-blue)] font-medium">Information Systems Manager</span> who loves solving complex puzzles through code. By day, I transform technical challenges into elegant solutions that drive business growth. By night, I tinker with <span className="text-[var(--color-neon-purple)] font-medium">full-stack projects</span> like this website, constantly expanding my toolkit. When I'm not coding, you'll find me running marathons, playing chess, or diving into my collection of 90s tech memorabilia.
+              I'm Kieran, an Information Systems Manager who builds digital solutions that work. At my day job, I develop and maintain web platforms and IT infrastructure that transform business challenges into streamlined systems. My background in economics gives me a unique perspective - I see technology as a tool for genuine improvement, not innovation merely for its own sake.
             </p>
             
-            <div className="border border-neon-blue/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm">
-              <h3 className="text-2xl font-orbitron text-white mb-4">Technical Arsenal</h3>
+            <p className="text-lg text-gray-300 leading-relaxed">
+              This website is my first complete full-stack project - it'll be my digital laboratory where I experiment with both old and new tech. The chatbot in the bottom right corner uses my server to communicate with the ChatGPT 3.5 API... give it a go! As I continue to develop my Linux server skills, I'll be hosting more projects on my VPS, expanding this digital playground.
+            </p>
+            
+            <p className="text-lg text-gray-300 leading-relaxed">
+              When I'm not coding, you'll find me running long distances, drinking craft beers and wild camping, or enjoying TV and cinema.
+            </p>
+            
+            <div className="border border-neon-blue/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm transition-all duration-300 hover:border-neon-blue hover:shadow-lg hover:shadow-neon-blue/20 group">
+              <h3 className="text-2xl font-orbitron text-white mb-4 group-hover:text-neon-blue transition-colors duration-300">
+                <span className="relative inline-block">
+                  Technical Arsenal
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue group-hover:w-full transition-all duration-500"></span>
+                </span>
+              </h3>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {["React", "Node.js", "Python", "Linux", "AI", "Rest API", "Power BI", "Excel"].map((skill) => (
-                  <div key={skill} className="border border-neon-blue/20 rounded px-4 py-2 text-center bg-cyber-dark hover:border-neon-blue hover:text-neon-blue transition-colors duration-300">
+                  <div key={skill} className="border border-neon-blue/20 rounded px-4 py-2 text-center bg-cyber-dark hover:border-neon-blue hover:text-neon-blue transition-colors duration-300 hover:bg-cyber-light/10">
                     {skill}
                   </div>
                 ))}
               </div>
             </div>
             
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex-1 border border-neon-purple/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm">
-                <h3 className="text-xl font-orbitron text-white mb-3">Background</h3>
-                <p className="text-gray-300">
-                With over 5 years of experience in digital transformation, I bring a unique blend of economic analysis and technical expertise to every project. My foundation in Economics provides analytical rigor, while my Computer Science background and continuous learning fuel my technical capabilities. I've specialized in developing data-driven systems that bridge business needs with technological solutions. My approach combines formal education with hands-on experience, allowing me to see both the technical details and the bigger strategic picture in every challenge I tackle.
+            <div className="flex flex-col gap-6">
+              <div className="border border-neon-purple/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm transition-all duration-300 hover:border-neon-purple hover:shadow-lg hover:shadow-neon-purple/20 group">
+                <h3 className="text-xl font-orbitron text-white mb-3 group-hover:text-neon-purple transition-colors duration-300">
+                  <span className="relative inline-block">
+                    Background
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-purple group-hover:w-full transition-all duration-500"></span>
+                  </span>
+                </h3>
+                <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 mb-4">
+                  My tech journey started when I was about 6 years old on my first computer, a Windows 95 desktop.
+                </p>
+                <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 mb-4">
+                  The early web really captured my attention and threw me into a world of exploration. I loved ICT lessons at school, and took additional CISCO classes to learn more about hardware and networking. When I was around 13 I started learning how to use Photoshop, and feeling adventurous, first installed Ubuntu Linux (6.06 Dapper Drake) on my PC.
+                </p>
+                <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 mb-4">
+                  During A-Levels, I picked up Computer Science and got my first taste of programming with Pascal and Visual Basic. At this time everybody wanted to be a Grime MC rather than a programmer, so I started learning how to make music on computers - starting with FruityLoops, Cubase and finally Ableton Live. I then went on to study a degree in Economics where I honed my skills with statistics and picked up an interest in data analytics.
+                </p>
+                <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                  Throughout all of this I'd never gotten the chance to put together a full stack piece of work before - so after studying Cloud Computing, React and Node.js with IBM's Training platform I thought I'd finally build something and host it online and here we are.
                 </p>
               </div>
               
-              <div className="flex-1 border border-neon-blue/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm">
-                <h3 className="text-xl font-orbitron text-white mb-3">Philosophy</h3>
-                <p className="text-gray-300">
-                I create digital experiences that honor the personal, exploratory spirit of the early web while embracing tomorrow's innovations. I believe AI represents an extraordinary opportunity to enhance human creativity—not replace it. My work aims to find that sweet spot where cutting-edge technology amplifies our uniquely human capacity for imagination, connection, and meaning. In a world of increasing automation, I'm committed to building tools that expand possibilities rather than limit them.
+              <div className="border border-neon-blue/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm transition-all duration-300 hover:border-neon-blue hover:shadow-lg hover:shadow-neon-blue/20 group">
+                <h3 className="text-xl font-orbitron text-white mb-3 group-hover:text-neon-blue transition-colors duration-300">
+                  <span className="relative inline-block">
+                    Philosophy
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue group-hover:w-full transition-all duration-500"></span>
+                  </span>
+                </h3>
+                <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
+                  I believe in technology that empowers rather than restricts. The Ubuntu philosophy of "I am because we are" resonates with me - our digital landscape should be collaborative, accessible, and community-driven. This is why I value free and open-source software. The web was meant to be an open playground of ideas, not walled gardens controlled by a handful of companies. I care about digital privacy and believe people should have control over their own data and digital identities. With AI, I see an opportunity to enhance human creativity, not replace it. The most exciting applications are those that give us new tools to express ourselves and solve problems in ways we couldn't before. I'm committed to technology that amplifies our uniquely human capacity for imagination and connection.
                 </p>
               </div>
             </div>
@@ -57,4 +89,4 @@ const About = () => {
 
 About.propTypes = {};
 
-export default About; 
+export default About;
