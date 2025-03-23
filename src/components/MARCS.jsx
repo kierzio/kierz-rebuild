@@ -1,11 +1,11 @@
-// src/components/EvaChatbot.jsx
+// src/components/MARCS.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
-const EvaChatbot = () => {
+const MARCS = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { id: 1, text: "Hello! I'm EVA. How can I assist you today?", isUser: false }
+    { id: 1, text: "Hello! I'm MARCS. How can I help you today?", isUser: false }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,7 @@ const EvaChatbot = () => {
     }
   }, [messages]);
 
-  // Blinking effect for EVA's eye
+  // Blinking effect for MARCS's eye
   useEffect(() => {
     const blinkInterval = setInterval(() => {
       setIsBlinking(true);
@@ -100,7 +100,7 @@ const EvaChatbot = () => {
           {/* Chat Header */}
           <div className="px-3 py-3 bg-cyber-dark/90 flex items-center border-b border-cyan-500/30">
             <h3 className="m-0 text-cyan-400 text-sm font-medium uppercase tracking-wider font-orbitron">
-              EVA Assistant
+              MARCS
             </h3>
           </div>
           
@@ -153,7 +153,7 @@ const EvaChatbot = () => {
         </div>
       )}
       
-      {/* EVA Icon */}
+      {/* MARCS Icon */}
       <div
         onClick={toggleChat}
         className="w-14 h-14 rounded-full bg-black flex justify-center items-center cursor-pointer shadow-lg shadow-cyan-500/50 border-2 border-cyan-400 overflow-hidden relative hover:scale-110 transition-transform active:scale-95"
@@ -188,4 +188,4 @@ const EvaChatbot = () => {
   );
 };
 
-export default EvaChatbot;
+export default MARCS;

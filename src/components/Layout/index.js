@@ -1,7 +1,7 @@
 // src/components/layout/index.js 
 import React from "react";
 import Navigation from "../Navigation";
-import EvaChatbot from '../EvaChatbot';
+import MARCS from '../MARCS';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
       <main className="flex-grow">
         {children}
       </main>
-      <EvaChatbot />
+      <MARCS />
       <Footer />
     </div>
   );

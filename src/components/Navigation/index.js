@@ -37,7 +37,7 @@ const Navigation = () => {
             scrollTo("intro");
           }}
         >
-          Kierz.io
+          kierz.io
         </a>
 
         <div className="hidden md:flex space-x-6">
