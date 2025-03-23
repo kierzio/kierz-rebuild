@@ -47,25 +47,57 @@ const ParticleBackground = () => {
             },
             move: {
               enable: true,
-              speed: 1,
+              speed: 1.2,
               direction: "none",
               random: false,
               straight: false,
-              outMode: "bounce"
+              outMode: "bounce",
+              attract: {
+                enable: true,
+                rotateX: 600,
+                rotateY: 1200
+              }
             },
             number: {
               density: {
                 enable: true,
                 area: 800,
               },
-              value: 50,
+              value: 60,
             },
             opacity: {
               value: 0.7,
+              random: true,
             },
             size: {
               value: 3,
               random: true
+            },
+            shape: {
+              type: "circle"
+            }
+          },
+          interactivity: {
+            events: {
+              onhover: {
+                enable: true,
+                mode: "grab"
+              },
+              onclick: {
+                enable: true,
+                mode: "push"
+              }
+            },
+            modes: {
+              grab: {
+                distance: 140,
+                links: {
+                  opacity: 0.8
+                }
+              },
+              push: {
+                quantity: 4
+              }
             }
           },
           detectRetina: true
