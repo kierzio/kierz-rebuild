@@ -15,7 +15,7 @@ const About = () => {
           
           <div className="space-y-8 animate-fadeIn">
             <p className="text-lg text-gray-300 leading-relaxed">
-              I'm a <span className="text-neon-blue font-medium">full-stack developer</span> and <span className="text-neon-purple font-medium">digital artist</span> with a passion for creating immersive cyberpunk-inspired web experiences. My work exists at the intersection of cutting-edge technology and futuristic design.
+            I'm Kieran, an <span className="text-[var(--color-neon-blue)] font-medium">Information Systems Manager</span> who loves solving complex puzzles through code. By day, I transform technical challenges into elegant solutions that drive business growth. By night, I tinker with <span className="text-[var(--color-neon-purple)] font-medium">full-stack projects</span> like this website, constantly expanding my toolkit. When I'm not coding, you'll find me running marathons, playing chess, or diving into my collection of 90s tech memorabilia.
             </p>
             
             <div className="border border-neon-blue/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm">
@@ -34,14 +34,14 @@ const About = () => {
               <div className="flex-1 border border-neon-purple/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm">
                 <h3 className="text-xl font-orbitron text-white mb-3">Background</h3>
                 <p className="text-gray-300">
-                  With over 5 years of experience building digital products, I specialize in creating interfaces that are not only functional but immersive. I believe the future of the web is experiential.
+                With over 5 years of experience in digital transformation, I bring a unique blend of economic analysis and technical expertise to every project. My foundation in Economics provides analytical rigor, while my Computer Science background and continuous learning fuel my technical capabilities. I've specialized in developing data-driven systems that bridge business needs with technological solutions. My approach combines formal education with hands-on experience, allowing me to see both the technical details and the bigger strategic picture in every challenge I tackle.
                 </p>
               </div>
               
               <div className="flex-1 border border-neon-blue/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm">
                 <h3 className="text-xl font-orbitron text-white mb-3">Philosophy</h3>
                 <p className="text-gray-300">
-                    I create interfaces and data solutions that deliver powerful functionality through clarity and precision. My focus is intuitive, responsive design combined with performant, modern technologies tailored to deliver real-world impact.
+                I create digital experiences that honor the personal, exploratory spirit of the early web while embracing tomorrow's innovations. I believe AI represents an extraordinary opportunity to enhance human creativity—not replace it. My work aims to find that sweet spot where cutting-edge technology amplifies our uniquely human capacity for imagination, connection, and meaning. In a world of increasing automation, I'm committed to building tools that expand possibilities rather than limit them.
                 </p>
               </div>
             </div>

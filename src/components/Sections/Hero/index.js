@@ -70,17 +70,21 @@ const Hero = () => {
         {!userName && (
           <form onSubmit={handleNameSubmit} className="mt-8">
             <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
-              <input
-                type="text"
-                name="name"
-                placeholder="What's your name?"
-                className="bg-cyber-light text-white border border-neon-blue rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-neon-purple w-full md:w-auto"
-              />
+              <div className="relative w-full md:w-auto">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="What's your name?"
+                  className="bg-white/10 text-neon-blue border-2 border-neon-blue/50 rounded-md px-4 py-3 focus:outline-none focus:border-neon-purple focus:ring-2 focus:ring-neon-purple/30 w-full md:w-64 font-orbitron text-sm tracking-wider placeholder-neon-blue/40 shadow-lg shadow-neon-blue/20"
+                />
+                <div className="absolute inset-0 bg-neon-blue/5 rounded-md pointer-events-none"></div>
+              </div>
               <button
                 type="submit"
-                className="bg-neon-blue text-cyber-dark font-medium px-6 py-2 rounded-md hover:bg-neon-purple transition-colors duration-300 w-full md:w-auto"
+                className="bg-neon-blue text-cyber-dark font-medium px-6 py-3 rounded-md hover:bg-neon-purple transition-all duration-300 w-full md:w-auto font-orbitron tracking-wider uppercase text-sm relative overflow-hidden group shadow-lg shadow-neon-blue/30"
               >
-                Enter
+                <span className="relative z-10">Enter</span>
+                <span className="absolute inset-0 bg-gradient-to-r from-neon-blue to-neon-purple opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               </button>
             </div>
           </form>
@@ -88,12 +92,38 @@ const Hero = () => {
 
         <div className="mt-12">
           <button
-            onClick={() => document.getElementById("intro").scrollIntoView({ behavior: "smooth" })}
-            className="group border border-neon-blue rounded-full p-2 hover:bg-neon-blue/20 transition-all duration-300"
+            onClick={() => document.getElementById("about").scrollIntoView({ behavior: "smooth" })}
+            className="group relative p-3 rounded-full hover:bg-neon-blue/10 transition-all duration-300 focus:outline-none"
+            aria-label="Scroll to About section"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neon-blue animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
+            {/* Outer glow ring */}
+            <div className="absolute inset-0 rounded-full bg-neon-blue/0 group-hover:bg-neon-blue/5 transition-all duration-500 animate-pulse"></div>
+            
+            {/* Inner circle */}
+            <div className="relative border-2 border-neon-blue/50 rounded-full p-2 group-hover:border-neon-blue transition-all duration-300 shadow-lg group-hover:shadow-neon-blue/40">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-6 w-6 text-neon-blue animate-bounce group-hover:text-neon-purple transition-colors duration-300" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+                  className="group-hover:stroke-[2.5] transition-all duration-300"
+                />
+              </svg>
+            </div>
+            
+            {/* Animated particles */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+              <div className="absolute top-1/2 left-1/2 w-1 h-1 rounded-full bg-neon-blue animate-ping delay-100"></div>
+              <div className="absolute top-1/2 left-1/2 w-1 h-1 rounded-full bg-neon-purple animate-ping delay-300"></div>
+              <div className="absolute top-1/2 left-1/2 w-1 h-1 rounded-full bg-neon-blue animate-ping delay-500"></div>
+            </div>
           </button>
         </div>
       </div>

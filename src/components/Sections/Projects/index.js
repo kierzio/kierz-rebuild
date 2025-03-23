@@ -44,7 +44,7 @@ const Projects = () => {
       <div className="container mx-auto px-4">
         <h2 className="text-4xl md:text-5xl font-bold mb-12 text-neon-blue font-orbitron text-center">
           <span className="relative inline-block">
-            <span className="relative z-10">Projects</span>
+            <span className="relative z-10">Projects [coming soon]</span>
             <span className="absolute bottom-0 left-0 w-full h-1 bg-neon-purple transform translate-y-1"></span>
           </span>
         </h2>
