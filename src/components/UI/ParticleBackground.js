@@ -2,8 +2,9 @@
 import React, { useCallback, useState } from "react";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
+import PropTypes from "prop-types";
 
-const ParticleBackground = () => {
+const ParticleBackground = ({ className }) => {
   const [hasError, setHasError] = useState(false);
   
   const particlesInit = useCallback(async (engine) => {
@@ -15,14 +16,15 @@ const ParticleBackground = () => {
     }
   }, []);
 
-  const particlesLoaded = useCallback(async (container) => {
+  const particlesLoaded = useCallback(async () => {
+    // Optional: Add any post-loading actions here
   }, []);
 
   // Skip rendering if there was an error
   if (hasError) return null;
 
   return (
-    <div className="absolute inset-0 z-0">
+    <div className={`absolute inset-0 z-0 ${className || ""}`}>
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -31,27 +33,29 @@ const ParticleBackground = () => {
           fullScreen: false,
           background: {
             color: {
-              value: "#0d0d0d",
+              value: "#0a0028",
             },
           },
           particles: {
             color: {
-              value: ["#00f0ff", "#bf00ff", "#3f36d5"],
+              value: ["#ff00c3", "#00f0ff", "#bf00ff", "#8A2BE2", "#ff69b4"],
             },
             links: {
-              color: "#00f0ff",
+              color: {
+                value: ["#ff00c3", "#00f0ff", "#bf00ff"],
+              },
               distance: 150,
               enable: true,
-              opacity: 0.5,
+              opacity: 0.4,
               width: 1,
             },
             move: {
               enable: true,
               speed: 1.2,
               direction: "none",
-              random: false,
+              random: true,
               straight: false,
-              outMode: "bounce",
+              outMode: "out",
               attract: {
                 enable: true,
                 rotateX: 600,
@@ -68,31 +72,49 @@ const ParticleBackground = () => {
             opacity: {
               value: 0.7,
               random: true,
+              animation: {
+                enable: true,
+                speed: 0.8,
+                minimumValue: 0.3,
+                sync: false
+              }
             },
             size: {
-              value: 3,
+              value: { min: 1, max: 3 },
               random: true
             },
             shape: {
               type: "circle"
+            },
+            twinkle: {
+              particles: {
+                enable: true,
+                color: "#ffffff",
+                frequency: 0.05,
+                opacity: 1
+              }
             }
           },
           interactivity: {
+            detectsOn: "canvas",
             events: {
-              onhover: {
+              onHover: {
                 enable: true,
-                mode: "grab"
+                mode: "bubble"
               },
-              onclick: {
+              onClick: {
                 enable: true,
                 mode: "push"
               }
             },
             modes: {
-              grab: {
-                distance: 140,
-                links: {
-                  opacity: 0.8
+              bubble: {
+                distance: 200,
+                size: 6,
+                duration: 2,
+                opacity: 0.8,
+                color: {
+                  value: ["#ff00c3", "#00f0ff", "#bf00ff"]
                 }
               },
               push: {
@@ -113,6 +135,10 @@ const ParticleBackground = () => {
       />
     </div>
   );
+};
+
+ParticleBackground.propTypes = {
+  className: PropTypes.string
 };
 
 export default ParticleBackground;

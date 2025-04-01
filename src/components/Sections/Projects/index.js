@@ -42,12 +42,17 @@ const Projects = () => {
   return (
     <section id="projects" className="min-h-screen py-20 bg-cyber-dark relative">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl md:text-5xl font-bold mb-12 text-neon-blue font-orbitron text-center">
-          <span className="relative inline-block">
-            <span className="relative z-10">Projects</span>
-            <span className="absolute bottom-0 left-0 w-full h-1 bg-neon-purple transform translate-y-1"></span>
-          </span>
-        </h2>
+        <div className="flex flex-col items-center justify-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold mb-2 text-neon-blue font-orbitron text-center">
+            <span className="relative inline-block">
+              <span className="relative z-10">Projects</span>
+              <span className="absolute bottom-0 left-0 w-full h-1 bg-neon-purple transform translate-y-1"></span>
+            </span>
+          </h2>
+          <div className="mt-4 inline-block px-4 py-1 bg-neon-purple/10 border border-neon-purple rounded-full">
+            <span className="text-neon-purple text-sm font-medium tracking-wider">COMING SOON</span>
+          </div>
+        </div>
         
         {/* Filter buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
@@ -93,19 +98,19 @@ const Projects = () => {
               </div>
               
               <div className="mt-auto flex justify-between items-center">
-                <button className="text-neon-blue text-sm flex items-center gap-1 hover:text-neon-purple transition-colors duration-300">
-                  <span>View details</span>
+                <div className="text-neon-blue/50 text-sm flex items-center gap-1">
+                  <span>Coming soon</span>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                </button>
+                </div>
                 
-                <button className="text-neon-blue text-sm flex items-center gap-1 hover:text-neon-purple transition-colors duration-300">
-                  <span>Live demo</span>
+                <div className="text-neon-blue/50 text-sm flex items-center gap-1">
+                  <span>In development</span>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                   </svg>
-                </button>
+                </div>
               </div>
             </div>
           ))}

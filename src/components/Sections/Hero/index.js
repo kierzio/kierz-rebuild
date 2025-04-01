@@ -6,7 +6,8 @@ const Hero = () => {
   const [userName, setUserName] = useState("");
   const [typing, setTyping] = useState(true);
   const [text, setText] = useState("");
-  const fullText = userName ? `Welcome to the future, ${userName}` : "Welcome to the Future";
+  const [nameEntered, setNameEntered] = useState(false);
+  const fullText = nameEntered ? (userName ? `Welcome to the future, ${userName}` : "Welcome to the Future") : "What's your name?";
 
   // Optimize the error handling useEffect in Hero component
   useEffect(() => {
@@ -28,6 +29,7 @@ const Hero = () => {
     const storedName = typeof window !== "undefined" ? localStorage.getItem("userName") : null;
     if (storedName) {
       setUserName(storedName);
+      setNameEntered(true);
     }
 
     if (typing) {
@@ -53,47 +55,68 @@ const Hero = () => {
     const nameInput = e.target.elements.name.value.trim();
     if (nameInput) {
       setUserName(nameInput);
+      setNameEntered(true);
       localStorage.setItem("userName", nameInput);
     }
   };
 
   return (
-    <section id="intro" className="h-screen relative flex flex-col items-center justify-center">
+    <section id="intro" className="h-screen relative flex flex-col items-center justify-center overflow-hidden">
       {useParticles && <ParticleBackground />}
+      
+      {/* Grid overlay */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+      
+      {/* Floating accent elements */}
+      <div className="absolute w-32 h-32 -top-16 -left-16 bg-neon-purple/10 rounded-full blur-xl animate-floatUp"></div>
+      <div className="absolute w-40 h-40 bottom-20 -right-20 bg-neon-blue/10 rounded-full blur-xl animate-floatUp" style={{animationDelay: '1s'}}></div>
 
-      <div className="relative z-10 text-center px-4">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-neon-blue font-orbitron">
+      <div className="relative z-10 text-center px-4 animate-fadeIn">
+        <h1 className="heading-cyber text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
           {text}
-          <span className="animate-pulse">|</span>
+          <span className="animate-blink inline-block w-[3px] h-[0.9em] bg-neon-purple ml-1 align-middle">|</span>
         </h1>
 
-        {!userName && (
-          <form onSubmit={handleNameSubmit} className="mt-8">
+        {!nameEntered && (
+          <form onSubmit={handleNameSubmit} className="mt-10 max-w-lg mx-auto">
             <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
               <input
                 type="text"
                 name="name"
-                placeholder="What's your name?"
-                className="bg-cyber-light text-white border border-neon-blue rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-neon-purple w-full md:w-auto"
+                placeholder="Enter your name"
+                className="input-cyber w-full md:w-auto"
+                aria-label="Your name"
+                autoFocus
               />
               <button
                 type="submit"
-                className="bg-neon-blue text-cyber-dark font-medium px-6 py-2 rounded-md hover:bg-neon-purple transition-colors duration-300 w-full md:w-auto"
+                className="btn-primary w-full md:w-auto"
+                aria-label="Enter"
               >
                 Enter
               </button>
             </div>
           </form>
         )}
+        
+        {nameEntered && (
+          <p className="mt-6 text-lg text-gray-300 max-w-lg mx-auto leading-relaxed">
+            Welcome to my digital playground. I'm a developer passionate about crafting immersive digital experiences with cutting-edge technology.
+          </p>
+        )}
 
-        <div className="mt-12">
+        <div className="mt-16">
           <button
-            onClick={() => document.getElementById("intro").scrollIntoView({ behavior: "smooth" })}
-            className="group border border-neon-blue rounded-full p-2 hover:bg-neon-blue/20 transition-all duration-300"
+            onClick={() => document.getElementById("about").scrollIntoView({ behavior: "smooth" })}
+            className="group inline-flex flex-col items-center gap-2 text-white hover:text-neon-blue transition-all duration-300"
+            aria-label="Scroll to about section"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neon-blue animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
+            <span className="text-sm uppercase tracking-wider font-medium">Explore</span>
+            <div className="border border-neon-blue/50 rounded-full p-2 group-hover:border-neon-blue group-hover:bg-neon-blue/10 group-hover:shadow-neon-blue transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neon-blue animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
           </button>
         </div>
       </div>
