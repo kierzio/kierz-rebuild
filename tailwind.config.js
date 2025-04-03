@@ -26,6 +26,7 @@ module.exports = {
         'blink': 'blink 1s ease-in-out infinite',
         'gradientFlow': 'gradientFlow 6s ease infinite',
         'floatUp': 'floatUp 3s ease-in-out infinite',
+        'scan': 'scan 1.5s ease-in-out infinite',
       },
       boxShadow: {
         'neon-blue': '0 0 5px 0 var(--color-neon-blue), 0 0 10px 0 var(--color-neon-blue)',

@@ -100,21 +100,44 @@ const Hero = () => {
         )}
         
         {nameEntered && (
-          <p className="mt-6 text-lg text-gray-300 max-w-lg mx-auto leading-relaxed">
-            Welcome to my digital playground. I'm a developer passionate about crafting immersive digital experiences with cutting-edge technology.
-          </p>
+          <div className="mt-6">
+            {/* Space reserved for future content if needed */}
+          </div>
         )}
 
         <div className="mt-16">
           <button
             onClick={() => document.getElementById("about").scrollIntoView({ behavior: "smooth" })}
-            className="group inline-flex flex-col items-center gap-2 text-white hover:text-neon-blue transition-all duration-300"
+            className="group relative overflow-hidden px-10 py-3 bg-transparent border-0 outline-none focus:outline-none"
             aria-label="Scroll to about section"
           >
-            <span className="text-sm uppercase tracking-wider font-medium">Explore</span>
-            <div className="border border-neon-blue/50 rounded-full p-2 group-hover:border-neon-blue group-hover:bg-neon-blue/10 group-hover:shadow-neon-blue transition-all duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neon-blue animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            {/* Main button background with gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-cyber-dark via-cyber-dark to-cyber-light/20 group-hover:from-cyber-light/10 transition-all duration-500"></div>
+            
+            {/* Animated border */}
+            <div className="absolute inset-0 border border-neon-blue/50 group-hover:border-neon-blue group-hover:border-opacity-100 transition-all duration-300">
+              {/* Corner accents */}
+              <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-neon-blue transform -translate-x-1/2 -translate-y-1/2"></div>
+              <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-neon-blue transform translate-x-1/2 -translate-y-1/2"></div>
+              <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-neon-blue transform -translate-x-1/2 translate-y-1/2"></div>
+              <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-neon-blue transform translate-x-1/2 translate-y-1/2"></div>
+            </div>
+            
+            {/* Glow effect */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-30 bg-neon-blue/20 blur-md transition-opacity duration-500"></div>
+            
+            {/* Horizontal light scan effect */}
+            <div className="absolute inset-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute top-0 -left-full w-[400%] h-full bg-gradient-to-r from-transparent via-neon-blue/20 to-transparent group-hover:animate-scan"></div>
+            </div>
+            
+            {/* Text and icon container */}
+            <div className="relative flex items-center justify-center gap-3 z-10">
+              <span className="font-orbitron text-white group-hover:text-neon-blue text-lg uppercase tracking-widest transition-colors duration-300">Explore</span>
+              
+              {/* Chevron down icon */}
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-neon-blue transform group-hover:translate-y-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>
           </button>

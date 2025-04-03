@@ -36,34 +36,62 @@ const About = () => {
             </h2>
           </div>
           
+          
           <div className="space-y-8">
-            <p className={`text-lg text-gray-300 leading-relaxed transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '200ms'}}>
-              I'm Kieran, an Information Systems Manager who builds digital solutions that work. At my day job, I develop and maintain web platforms and IT infrastructure that transform business challenges into streamlined systems. My background in economics gives me a unique perspective - I see technology as a tool for genuine improvement, not innovation merely for its own sake.
+            <h3 className={`text-2xl font-orbitron text-white mb-2 transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '200ms'}}>
+              Welcome — I'm Kieran.
+            </h3>
+            <p className={`text-lg text-gray-300 leading-relaxed transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '300ms'}}>
+              I'm an Information Systems Manager and developer specialising in robust, user-friendly digital infrastructure. My background in economics, particularly behavioural economics, uniquely informs my approach to technology. It helps me understand not just how systems work, but how people interact with them. By combining these insights with technical expertise, I develop solutions that genuinely streamline processes, improve user experience, and drive commercial success—particularly in product information management and e-commerce.
             </p>
             
-            <p className={`text-lg text-gray-300 leading-relaxed transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '400ms'}}>
-              This website is my first complete full-stack project - it'll be my digital laboratory where I experiment with both old and new tech. The chatbot in the bottom right corner uses my server to communicate with the ChatGPT 3.5 API... give it a go! As I continue to develop my Linux server skills, I'll be hosting more projects on my VPS, expanding this digital playground.
+            <h3 className={`text-2xl font-orbitron text-white mb-2 transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '400ms'}}>
+              This Website
+            </h3>
+            <p className={`text-lg text-gray-300 leading-relaxed transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '500ms'}}>
+              Think of this site as my digital workshop—a space to design, build, and deploy.<br />
+              This project represents my first full-stack development journey: a custom React frontend with Python Flask components running on my own Linux VPS, including backend integrations with a ChatGPT-powered assistant. As I continue developing server-side skills, this site will evolve into a portfolio of practical tools and experiments.
             </p>
             
-            <p className={`text-lg text-gray-300 leading-relaxed transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '600ms'}}>
-              When I'm not coding, you'll find me running long distances, drinking craft beers and wild camping, or enjoying TV and cinema.
+            <h3 className={`text-2xl font-orbitron text-white mb-2 transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '600ms'}}>
+              Life, Unplugged
+            </h3>
+            <p className={`text-lg text-gray-300 leading-relaxed transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '700ms'}}>
+              When I'm away from the screen, I enjoy long-distance running, a good craft beer, and the occasional wild camping trip. Indoors, you'll usually find me watching films, reading about technology, or playing Wordle or chess.
             </p>
             
-            <div className={`border border-neon-blue/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm transition-all duration-500 hover:border-neon-blue hover:shadow-lg hover:shadow-neon-blue/20 group relative overflow-hidden transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '800ms'}}>
-              {/* Animated border effect */}
-              <div className="absolute -inset-[1px] bg-gradient-to-r from-neon-blue via-neon-purple to-neon-blue rounded-lg opacity-0 group-hover:opacity-30 blur-sm"></div>
-              <div className="absolute inset-0 bg-cyber-light/30 rounded-lg z-0"></div>
+            <div className={`border border-neon-blue/30 rounded-lg p-6 bg-cyber-light/30 backdrop-blur-sm transition-all duration-500 hover:border-neon-blue hover:shadow-lg hover:shadow-neon-blue/20 group cursor-default relative overflow-hidden transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '800ms'}}>
+              {/* Animated corner accents */}
+              <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-neon-blue/50 transform translate-x-1 -translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300"></div>
+              <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-neon-blue/50 transform -translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300"></div>
               
               <div className="relative z-10">
-                <h3 className="text-2xl font-orbitron text-white mb-4 group-hover:text-neon-blue transition-colors duration-300">
+                <h3 className="text-xl font-orbitron text-white mb-3 group-hover:text-neon-blue transition-colors duration-300">
                   <span className="relative inline-block">
-                    Technical Arsenal
+                    Technical Skills
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue group-hover:w-full transition-all duration-500"></span>
                   </span>
                 </h3>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {["React", "Node.js", "Python", "Linux", "AI", "Rest API", "Power BI", "Excel"].map((skill, index) => (
+                  {[
+                    "Excel",
+                    "Python",
+                    "Akeneo PIM",
+                    "A.I.",
+                    "Power BI",
+                    "Ubuntu Desktop",
+                    "Linux Server",
+                    "Windows",
+                    "HTML & CSS",
+                    "JavaScript",
+                    "REST APIs",
+                    "Prompt Engineering",
+                    "React",
+                    "Flask",
+                    "VPS Management",
+                    "WordPress"
+                  ].map((skill, index) => (
                     <div 
                       key={skill} 
                       className={`relative border border-neon-blue/20 rounded px-4 py-2 text-center bg-cyber-dark transition-all duration-300 hover:bg-cyber-light/10 group/skill overflow-hidden cursor-pointer transform hover:-translate-y-1
@@ -111,16 +139,13 @@ const About = () => {
                   </span>
                 </h3>
                 <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 mb-4">
-                  My tech journey started when I was about 6 years old on my first computer, a Windows 95 desktop.
+                  My passion for technology began at age six, exploring the early web on my first Windows 95 computer.
                 </p>
                 <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 mb-4">
-                  The early web really captured my attention and threw me into a world of exploration. I loved ICT lessons at school, and took additional CISCO classes to learn more about hardware and networking. When I was around 13 I started learning how to use Photoshop, and feeling adventurous, first installed Ubuntu Linux (6.06 Dapper Drake) on my PC.
-                </p>
-                <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 mb-4">
-                  During A-Levels, I picked up Computer Science and got my first taste of programming with Pascal and Visual Basic. At this time everybody wanted to be a Grime MC rather than a programmer, so I started learning how to make music on computers - starting with FruityLoops, Cubase and finally Ableton Live. I then went on to study a degree in Economics where I honed my skills with statistics and picked up an interest in data analytics.
+                  At school, I developed a strong interest in ICT and networking, enrolling in additional Cisco classes and experimenting with Ubuntu Linux by age 13. I also explored graphic design through Photoshop, alongside digital audio production with FruityLoops, Cubase, and Ableton Live.
                 </p>
                 <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
-                  Throughout all of this I'd never gotten the chance to put together a full stack piece of work before - so after studying Cloud Computing, React and Node.js with IBM's Training platform I thought I'd finally build something and host it online and here we are.
+                  Later, studying Economics at university, I developed expertise in behavioural economics and data analysis. Today, these interests converge in my work, particularly in product information management, where understanding consumer behaviour and optimising user experience are central to effective e-commerce solutions.
                 </p>
               </div>
               
@@ -139,8 +164,14 @@ const About = () => {
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-neon-blue group-hover:w-full transition-all duration-500"></span>
                     </span>
                   </h3>
+                  <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 mb-4">
+                    I believe that technology should empower people, not complicate their lives.
+                  </p>
+                  <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300 mb-4">
+                    The principle behind open-source software—that ideas should be shared, improved, and available to all—resonates deeply with me. I value transparency, privacy, and digital autonomy.
+                  </p>
                   <p className="text-gray-300 group-hover:text-gray-200 transition-colors duration-300">
-                    I believe in technology that empowers rather than restricts. The Ubuntu philosophy of "I am because we are" resonates with me - our digital landscape should be collaborative, accessible, and community-driven. This is why I value free and open-source software. The web was meant to be an open playground of ideas, not walled gardens controlled by a handful of companies. I care about digital privacy and believe people should have control over their own data and digital identities. With AI, I see an opportunity to enhance human creativity, not replace it. The most exciting applications are those that give us new tools to express ourselves and solve problems in ways we couldn't before. I'm committed to technology that amplifies our uniquely human capacity for imagination and connection.
+                    With AI, I see opportunities not in replacement, but in augmentation. The most promising developments enhance how we think, create, and solve problems—without diminishing our humanity.
                   </p>
                 </div>
               </div>
