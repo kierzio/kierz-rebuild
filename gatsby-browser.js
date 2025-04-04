@@ -50,8 +50,71 @@ exports.onRouteUpdate = () => {
           link.classList.remove('active');
         }
       });
+      
+      // Setup project filters
+      setupProjectFilters();
     }, 100);
   }
   
   return true;
 };
+
+// Setup project filters with animations
+function setupProjectFilters() {
+  if (typeof window === 'undefined') return;
+  
+  // Wait for DOM to be ready
+  setTimeout(() => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    if (!filterButtons.length || !projectCards.length) return;
+    
+    // Apply initial state - show all projects
+    projectCards.forEach(card => {
+      card.style.display = 'block';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+      card.style.transition = 'opacity 0.3s ease, transform 0.4s ease, border-color 0.3s ease';
+    });
+    
+    // Add click event to filter buttons
+    filterButtons.forEach(button => {
+      // Remove existing event listeners to prevent duplicates
+      const newButton = button.cloneNode(true);
+      if (button.parentNode) {
+        button.parentNode.replaceChild(newButton, button);
+      }
+      
+      newButton.addEventListener('click', () => {
+        // Update active button state
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        newButton.classList.add('active');
+        
+        const filterValue = newButton.getAttribute('data-filter');
+        
+        // Filter projects with animation
+        projectCards.forEach(card => {
+          // Check if card matches filter or if showing all
+          const isVisible = filterValue === 'all' || card.classList.contains(filterValue);
+          
+          if (isVisible) {
+            // Show with animation
+            card.style.display = 'block';
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, 10);
+          } else {
+            // Hide with animation
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 300);
+          }
+        });
+      });
+    });
+  }, 200);
+}
