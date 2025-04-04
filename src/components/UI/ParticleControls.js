@@ -1,5 +1,5 @@
 // src/components/UI/ParticleControls.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 
@@ -14,6 +14,12 @@ const ParticleControls = ({
   className = ""
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  
+  // Ensure we're running in browser environment
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   // Available interaction modes with icons and descriptions
   const modes = [
@@ -90,6 +96,9 @@ const ParticleControls = ({
     setIsOpen(false);
   };
 
+  // Don't render anything during SSR
+  if (!isClient) return null;
+  
   return (
     <div className={`fixed z-40 ${getPositionClasses()} ${className}`}>
       {/* Controls container */}

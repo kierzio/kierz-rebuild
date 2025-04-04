@@ -22,8 +22,14 @@ const ParticleBackground = ({
 }) => {
   const [hasError, setHasError] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const containerRef = useRef(null);
   const particlesRef = useRef(null);
+  
+  // Check if we're in the browser
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   // Initialize particles engine
   const particlesInit = useCallback(async (engine) => {
@@ -198,6 +204,15 @@ const ParticleBackground = ({
     }
   };
 
+  // Only render particles on the client side to avoid SSR issues
+  if (typeof window === 'undefined' || !isClient) {
+    return (
+      <div className={`absolute inset-0 z-0 ${className || ""} bg-cyber-dark`}>
+        <div className="absolute inset-0 bg-grid-pattern opacity-30"></div>
+      </div>
+    );
+  }
+  
   return (
     <div ref={containerRef} className={`absolute inset-0 z-0 ${className || ""}`}>
       <Particles

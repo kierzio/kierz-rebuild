@@ -150,7 +150,7 @@ const MARCS = () => {
                 value={inputValue}
                 onChange={handleInputChange}
                 disabled={isLoading}
-                className="flex-grow px-4 py-2 rounded-full border border-neon-purple/40 bg-cyber-dark-alt/80 text-white text-sm focus:outline-none focus:border-neon-purple focus:shadow-[0_0_8px_rgba(191,0,255,0.5)] transition-all duration-300"
+                className="flex-grow px-4 py-2 rounded-full border border-neon-purple/40 bg-cyber-dark text-white placeholder-white/50 text-sm focus:outline-none focus:border-neon-purple focus:shadow-[0_0_8px_rgba(191,0,255,0.5)] transition-all duration-300"
               />
               <button 
                 type="submit" 

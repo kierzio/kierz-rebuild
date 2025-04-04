@@ -36,9 +36,9 @@ const CyberNetwork = ({
     setIsClient(true);
   }, []);
 
-  // Initialize the 3D scene
+  // Initialize the 3D scene - only run on client side
   useEffect(() => {
-    if (!isClient || !containerRef.current) return;
+    if (typeof window === 'undefined' || !isClient || !containerRef.current) return;
     
     // Dynamically import Three.js to avoid SSR issues
     let THREE;
@@ -60,11 +60,15 @@ const CyberNetwork = ({
         camera.position.z = 30;
         cameraRef.current = camera;
         
-        // Setup renderer
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        // Setup renderer using the existing canvas
+        const canvas = containerRef.current.querySelector('canvas');
+        const renderer = new THREE.WebGLRenderer({ 
+          canvas,
+          antialias: true, 
+          alpha: true
+        });
         renderer.setSize(width, height);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        containerRef.current.appendChild(renderer.domElement);
         rendererRef.current = renderer;
         
         // Setup raycaster and mouse vector
@@ -79,6 +83,20 @@ const CyberNetwork = ({
         containerRef.current.addEventListener('mousemove', handleMouseMove);
         containerRef.current.addEventListener('mouseenter', () => { isActiveRef.current = true; });
         containerRef.current.addEventListener('mouseleave', () => { isActiveRef.current = false; });
+        
+        // Apply an initial impulse to get nodes moving more visibly
+        setTimeout(() => {
+          if (nodesRef.current) {
+            nodesRef.current.forEach(node => {
+              if (node.userData && node.userData.velocity) {
+                // Add a significant initial impulse
+                node.userData.velocity.x += (Math.random() - 0.5) * 0.2;
+                node.userData.velocity.y += (Math.random() - 0.5) * 0.2;
+                node.userData.velocity.z += (Math.random() - 0.5) * 0.1;
+              }
+            });
+          }
+        }, 500);
         
         // Start animation
         animate();
@@ -97,9 +115,7 @@ const CyberNetwork = ({
             cancelAnimationFrame(frameIdRef.current);
           }
           
-          if (rendererRef.current && containerRef.current) {
-            containerRef.current.removeChild(rendererRef.current.domElement);
-          }
+          // No need to remove the canvas element since we're using the existing one
           
           // Clean up THREE.js resources
           if (sceneRef.current) {
@@ -169,12 +185,12 @@ const CyberNetwork = ({
         node.position.z = Math.random() * 10 - 5;
       }
       
-      // Add velocity for animation
+      // Add velocity for animation - higher initial values to ensure motion
       node.userData = {
         velocity: new THREE.Vector3(
-          (Math.random() - 0.5) * 0.05,
-          (Math.random() - 0.5) * 0.05,
-          (Math.random() - 0.5) * 0.02
+          (Math.random() - 0.5) * 0.15,  // Increased by 3x
+          (Math.random() - 0.5) * 0.15,  // Increased by 3x
+          (Math.random() - 0.5) * 0.06   // Increased by 3x
         ),
         originalPos: node.position.clone(),
         // Randomly vary node size
@@ -296,8 +312,8 @@ const CyberNetwork = ({
       node.userData.velocity.y += (Math.random() - 0.5) * 0.005;
       node.userData.velocity.z += (Math.random() - 0.5) * 0.002;
       
-      // Apply slight drag/friction
-      node.userData.velocity.multiplyScalar(0.99);
+      // Apply minimal drag/friction to keep nodes moving
+      node.userData.velocity.multiplyScalar(0.995);
     });
     
     // Update line positions to follow connected nodes
@@ -397,12 +413,15 @@ const CyberNetwork = ({
     rendererRef.current.render(sceneRef.current, cameraRef.current);
   };
   
+  // Only render the canvas on the client side
   return (
     <div 
       ref={containerRef} 
       className={`absolute inset-0 ${className}`}
       style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 1s ease' }}
-    />
+    >
+      {isClient && <canvas className="w-full h-full" />}
+    </div>
   );
 };
 

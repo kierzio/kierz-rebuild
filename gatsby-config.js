@@ -2,6 +2,10 @@
  * @type {import('gatsby').GatsbyConfig}
  */
 module.exports = {
+  // Disable SSR to avoid issues with browser APIs
+  flags: {
+    DEV_SSR: false
+  },
     siteMetadata: {
       title: "kierz.io",
       description: "showcasing creative digital experiences at the intersection of technology and design",

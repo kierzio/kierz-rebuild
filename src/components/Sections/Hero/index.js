@@ -5,9 +5,17 @@ import CyberNetwork from "../../UI/CyberNetwork";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Hero = () => {
-  const [visualMode, setVisualMode] = useState("particles"); // 'particles' or 'network'
+  const [isClient, setIsClient] = useState(false);
+  const [visualMode, setVisualMode] = useState("network"); // 'particles' or 'network'
   const [useParticles, setUseParticles] = useState(true);
   const [interactionMode, setInteractionMode] = useState("repulse");
+  
+  // Check if we're in the browser
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsClient(true);
+    }
+  }, []);
   const [userName, setUserName] = useState("");
   const [typing, setTyping] = useState(true);
   const [text, setText] = useState("");
@@ -96,7 +104,8 @@ const Hero = () => {
 
   return (
     <section id="intro" className="h-screen relative flex flex-col items-center justify-center overflow-hidden">
-      {useParticles && (
+      {/* Only render interactive components on the client-side */}
+      {typeof window !== 'undefined' && isClient && useParticles && (
         <>
           <AnimatePresence mode="wait">
             {visualMode === "particles" ? (
@@ -163,6 +172,13 @@ const Hero = () => {
             />
           )}
         </>
+      )}
+      
+      {/* Fallback non-interactive background for SSR */}
+      {(typeof window === 'undefined' || !isClient) && (
+        <div className="absolute inset-0 bg-cyber-dark">
+          <div className="absolute inset-0 bg-grid-pattern opacity-30"></div>
+        </div>
       )}
       
       {/* Grid overlay */}

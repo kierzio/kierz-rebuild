@@ -1,12 +1,18 @@
 // gatsby-browser.js
-// Make THREE global for browser-only code
+// Set up browser-only code
 exports.onClientEntry = () => {
   // Set up globals that are provided for browser-only code
   if (typeof window !== 'undefined') {
-    // Load Three.js globally
-    import('three').then(THREE => {
-      window.THREE = THREE;
-    });
+    try {
+      // Load Three.js globally
+      import('three').then(THREE => {
+        window.THREE = THREE;
+      }).catch(err => {
+        console.error("Error loading Three.js:", err);
+      });
+    } catch (error) {
+      console.error("Failed to set up global imports:", error);
+    }
   }
 };
 
@@ -63,12 +69,14 @@ exports.onRouteUpdate = () => {
 function setupProjectFilters() {
   if (typeof window === 'undefined') return;
   
-  // Wait for DOM to be ready
-  setTimeout(() => {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('.project-card');
-    
-    if (!filterButtons.length || !projectCards.length) return;
+  try {
+    // Wait for DOM to be ready
+    setTimeout(() => {
+      try {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+        
+        if (!filterButtons.length || !projectCards.length) return;
     
     // Apply initial state - show all projects
     projectCards.forEach(card => {
@@ -115,6 +123,12 @@ function setupProjectFilters() {
           }
         });
       });
-    });
-  }, 200);
+      });
+      } catch (error) {
+        console.error("Error setting up filter event listeners:", error);
+      }
+    }, 200);
+  } catch (error) {
+    console.error("Error in setupProjectFilters:", error);
+  }
 }
