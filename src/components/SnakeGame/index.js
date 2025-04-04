@@ -54,8 +54,10 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   
   // Start the game loop
   const startGame = () => {
-    if (gameActiveRef.current) return;
+    // Force cleanup of any existing game before starting new one
+    stopGame();
     
+    // Set state correctly
     gameActiveRef.current = true;
     setGameOver(false);
     
@@ -67,11 +69,18 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
     // Reset snake
     snakeRef.current = [{ x: 3, y: 10 }, { x: 2, y: 10 }, { x: 1, y: 10 }];
     directionRef.current = { x: 1, y: 0 };
+    
+    // Ensure food exists in a valid location
     randomizeFood();
     
-    // Start game loop
-    clearInterval(moveIntervalRef.current);
-    moveIntervalRef.current = setInterval(gameLoop, MOVE_INTERVAL);
+    // Force a redraw to clear the overlay immediately
+    setTimeout(() => {
+      drawGame();
+      
+      // Start game loop
+      clearInterval(moveIntervalRef.current);
+      moveIntervalRef.current = setInterval(gameLoop, MOVE_INTERVAL);
+    }, 50);
   };
   
   // Stop the game loop
@@ -98,11 +107,14 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   
   // Main game loop
   const gameLoop = () => {
-    if (isPaused) return;
+    if (isPaused || gameOver) return;
     
     const snake = snakeRef.current;
     const food = foodRef.current;
     const direction = directionRef.current;
+    
+    // Ensure the game is active and has a valid direction
+    if (!gameActiveRef.current || !direction) return;
     
     // Create new head in current direction
     const head = snake[0];
@@ -142,6 +154,7 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   // Handle game over
   const handleGameOver = () => {
     stopGame();
+    // Set UI state
     setGameOver(true);
     
     // Check for new high score
@@ -152,6 +165,9 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       // Save to localStorage
       localStorage.setItem('snakeHighScore', currentScore.toString());
     }
+    
+    // Redraw game to show game over screen
+    drawGame();
     
     onGameOver && onGameOver(currentScore);
   };
@@ -260,11 +276,14 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
         e.preventDefault();
       }
       
-      // Restart game on SPACE when game over
+          // Restart game on SPACE when game over
       if (e.keyCode === 32) { // Space bar
         if (gameOver) {
           console.log("Restarting game with space bar");
+          // Make sure we reset the game state immediately
           startGame();
+          // Force redraw
+          requestAnimationFrame(drawGame);
           return;
         }
       }
@@ -325,7 +344,9 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   const handleDirectionButtonClick = (dx, dy) => {
     // Special handling for game over state
     if (gameOver) {
+      console.log("Restarting game with direction button");
       startGame(); // Just restart the game on any direction press
+      requestAnimationFrame(drawGame); // Force immediate redraw
       return;
     }
     
@@ -350,6 +371,7 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       // Use the pause button as a "restart" button when game is over
       console.log("Restarting game with button");
       startGame();
+      requestAnimationFrame(drawGame); // Force immediate redraw
     } else {
       setIsPaused(!isPaused);
     }
