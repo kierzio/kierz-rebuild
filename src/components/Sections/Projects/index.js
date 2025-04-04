@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "gatsby";
 
 /**
  * Projects section with animated filtering
@@ -15,13 +16,13 @@ const Projects = () => {
   const projects = [
     {
       id: 1,
-      title: "NeoCity Dashboard",
-      description: "A futuristic dashboard for monitoring smart city infrastructure with real-time data visualization.",
+      title: "Night City GTA",
+      description: "A cyberpunk GTA-style game built with Three.js featuring an open world environment with neon-lit streets and interactive gameplay.",
       category: "frontend",
       featured: true,
-      image: "neocity.jpg", // Optional future image
-      tags: ["React", "D3.js", "WebSockets"],
-      link: "#" // Placeholder link
+      image: "gta-game.jpg", // Optional future image
+      tags: ["Three.js", "WebGL", "JavaScript"],
+      link: "/game" // Game link
     },
     {
       id: 2,
@@ -253,21 +254,45 @@ const Projects = () => {
                 </div>
                 
                 <div className="mt-auto flex justify-between items-center">
-                  <div className="text-neon-blue/50 text-sm flex items-center gap-1">
-                    <span>Coming soon</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
+                  {project.id === 1 ? (
+                    <div className="text-neon-purple/80 text-sm flex items-center gap-1">
+                      <span>Play now</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  ) : (
+                    <div className="text-neon-blue/50 text-sm flex items-center gap-1">
+                      <span>Coming soon</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  )}
                   
-                  <button className="cyber-btn relative overflow-hidden py-2 px-4 text-sm text-neon-blue border border-neon-blue/50 hover:bg-neon-blue/10 transition-all duration-300 rounded-sm group">
-                    <span className="relative z-10">More details</span>
-                    
-                    {/* Hover effects */}
-                    <span className="absolute inset-0 h-full w-0 bg-neon-blue/10 transition-all duration-300 group-hover:w-full"></span>
-                    <span className="absolute top-0 right-0 h-1 w-2 bg-neon-blue"></span>
-                    <span className="absolute bottom-0 left-0 h-1 w-2 bg-neon-blue"></span>
-                  </button>
+                  {project.id === 1 ? (
+                    <Link
+                      to="/game"
+                      className="cyber-btn relative overflow-hidden py-2 px-4 text-sm text-neon-purple border border-neon-purple/50 hover:bg-neon-purple/10 transition-all duration-300 rounded-sm group"
+                    >
+                      <span className="relative z-10">Play Game</span>
+                      
+                      {/* Hover effects */}
+                      <span className="absolute inset-0 h-full w-0 bg-neon-purple/10 transition-all duration-300 group-hover:w-full"></span>
+                      <span className="absolute top-0 right-0 h-1 w-2 bg-neon-purple"></span>
+                      <span className="absolute bottom-0 left-0 h-1 w-2 bg-neon-purple"></span>
+                    </Link>
+                  ) : (
+                    <button className="cyber-btn relative overflow-hidden py-2 px-4 text-sm text-neon-blue border border-neon-blue/50 hover:bg-neon-blue/10 transition-all duration-300 rounded-sm group">
+                      <span className="relative z-10">More details</span>
+                      
+                      {/* Hover effects */}
+                      <span className="absolute inset-0 h-full w-0 bg-neon-blue/10 transition-all duration-300 group-hover:w-full"></span>
+                      <span className="absolute top-0 right-0 h-1 w-2 bg-neon-blue"></span>
+                      <span className="absolute bottom-0 left-0 h-1 w-2 bg-neon-blue"></span>
+                    </button>
+                  )}
                 </div>
               </motion.div>
             ))}

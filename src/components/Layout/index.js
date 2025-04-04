@@ -40,18 +40,23 @@ const Footer = () => {
   );
 };
 
-const Layout = ({ children, location }) => {
+const Layout = ({ children, location, hideNavigation = false }) => {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navigation />
+      {!hideNavigation && <Navigation />}
       <PageAnimation location={location}>
-        <main className="flex-grow">
+        <main className={`flex-grow ${hideNavigation ? 'pb-0' : ''}`}>
           {children}
         </main>
       </PageAnimation>
-      {/* eslint-disable-next-line react/jsx-pascal-case */}
-      <MARCS />
-      <Footer />
+      {/* Only show MARCS and Footer if navigation is visible */}
+      {!hideNavigation && (
+        <>
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
+          <MARCS />
+          <Footer />
+        </>
+      )}
       <PageTransitions />
     </div>
   );

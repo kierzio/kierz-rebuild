@@ -17,6 +17,9 @@
         "clean": "gatsby clean"
     },
     "dependencies": {
+        "@react-three/cannon": "^6.6.0",
+        "@react-three/drei": "^9.96.1",
+        "@react-three/fiber": "^8.15.19",
         "autoprefixer": "^10.4.16",
         "axios": "^1.8.1",
         "framer-motion": "^12.4.10",
