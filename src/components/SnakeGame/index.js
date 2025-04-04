@@ -57,19 +57,17 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
     if (gameActiveRef.current) return;
     
     gameActiveRef.current = true;
-    gameOver && setGameOver(false);
+    setGameOver(false);
     
-    // Reset score if game was over
-    if (gameOver) {
-      scoreRef.current = 0;
-      setScore(0);
-      onScoreUpdate && onScoreUpdate(0);
-      
-      // Reset snake
-      snakeRef.current = [{ x: 3, y: 10 }, { x: 2, y: 10 }, { x: 1, y: 10 }];
-      directionRef.current = { x: 1, y: 0 };
-      randomizeFood();
-    }
+    // Reset score
+    scoreRef.current = 0;
+    setScore(0);
+    onScoreUpdate && onScoreUpdate(0);
+    
+    // Reset snake
+    snakeRef.current = [{ x: 3, y: 10 }, { x: 2, y: 10 }, { x: 1, y: 10 }];
+    directionRef.current = { x: 1, y: 0 };
+    randomizeFood();
     
     // Start game loop
     clearInterval(moveIntervalRef.current);
@@ -257,15 +255,18 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   // Event listeners for game controls
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Prevent default behavior for arrow keys (scrolling)
+      // Prevent default behavior for game control keys (scrolling)
       if ([32, 37, 38, 39, 40, 80, 87, 65, 83, 68].includes(e.keyCode)) {
         e.preventDefault();
       }
       
-      if (gameOver && e.keyCode === 32) {
-        // Restart game on SPACE when game over
-        startGame();
-        return;
+      // Restart game on SPACE when game over
+      if (e.keyCode === 32) { // Space bar
+        if (gameOver) {
+          console.log("Restarting game with space bar");
+          startGame();
+          return;
+        }
       }
       
       if (e.keyCode === 80) { // P key
@@ -274,7 +275,7 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       }
       
       // Don't change direction if paused
-      if (isPaused) return;
+      if (isPaused || gameOver) return;
       
       const currentDirection = directionRef.current;
       
@@ -322,6 +323,15 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   
   // Mobile controls functions
   const handleDirectionButtonClick = (dx, dy) => {
+    // Special handling for game over state
+    if (gameOver) {
+      startGame(); // Just restart the game on any direction press
+      return;
+    }
+    
+    // Don't do anything if paused
+    if (isPaused) return;
+    
     const currentDirection = directionRef.current;
     
     // Don't allow movement in opposite direction
@@ -333,15 +343,12 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
     }
     
     directionRef.current = { x: dx, y: dy };
-    
-    // Restart game if game over
-    if (gameOver) {
-      startGame();
-    }
   };
   
   const togglePause = () => {
     if (gameOver) {
+      // Use the pause button as a "restart" button when game is over
+      console.log("Restarting game with button");
       startGame();
     } else {
       setIsPaused(!isPaused);
@@ -399,7 +406,7 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
           className="pause-btn"
           onClick={togglePause}
         >
-          {gameOver ? 'New Game' : (isPaused ? 'Resume' : 'Pause')}
+          {gameOver ? 'Start New Game' : (isPaused ? 'Resume' : 'Pause')}
         </button>
       </div>
     </div>
