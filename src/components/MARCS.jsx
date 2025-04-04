@@ -191,7 +191,7 @@ const MARCS = () => {
                 MARCS
               </h3>
             </div>
-            <div className="text-xs text-neon-blue/70 font-mono">v1.0.3</div>
+            <div className="text-xs text-neon-blue/70 font-mono">v1.1.0</div>
           </div>
           
           {/* Chat Messages */}

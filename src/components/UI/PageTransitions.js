@@ -72,43 +72,52 @@ const usePageTransitions = () => {
       // Trigger initial animation
       revealSections();
       
-      // Handle navigation links
+      // Handle navigation links - for both buttons and anchors
       const navLinks = document.querySelectorAll('.navigation-link');
       navLinks.forEach(link => {
-        // Remove any existing listeners first to prevent duplicates
-        const newLink = link.cloneNode(true);
-        link.parentNode.replaceChild(newLink, link);
+        // Skip if already processed by React
+        // Navigation component uses buttons with click handlers
+        if (link.tagName === 'BUTTON') {
+          return;
+        }
         
-        newLink.addEventListener('click', (e) => {
-          // Only for same-page navigation
-          const href = newLink.getAttribute('href');
-          if (href && href.startsWith('#')) {
-            e.preventDefault();
-            
-            const targetId = href.substring(1);
-            const targetSection = document.getElementById(targetId);
-            
-            if (targetSection) {
-              // Update active link styling
-              navLinks.forEach(link => link.classList.remove('active'));
-              newLink.classList.add('active');
+        // Only process anchor tags
+        if (link.tagName === 'A') {
+          // Remove any existing listeners first to prevent duplicates
+          const newLink = link.cloneNode(true);
+          link.parentNode.replaceChild(newLink, link);
+          
+          newLink.addEventListener('click', (e) => {
+            // Only for same-page navigation
+            const href = newLink.getAttribute('href');
+            if (href && href.startsWith('#')) {
+              e.preventDefault();
               
-              // Hide all sections
-              contentSections.forEach(section => {
-                section.classList.remove('visible');
-              });
+              const targetId = href.substring(1);
+              const targetSection = document.getElementById(targetId);
               
-              // Show target section after short delay
-              setTimeout(() => {
-                // Scroll to section
-                targetSection.scrollIntoView({ behavior: 'smooth' });
+              if (targetSection) {
+                // Update active link styling
+                navLinks.forEach(link => link.classList.remove('active'));
+                newLink.classList.add('active');
+              
+                // Hide all sections
+                contentSections.forEach(section => {
+                  section.classList.remove('visible');
+                });
                 
-                // Show section with animation
-                targetSection.classList.add('visible');
-              }, 400);
+                // Show target section after short delay
+                setTimeout(() => {
+                  // Scroll to section
+                  targetSection.scrollIntoView({ behavior: 'smooth' });
+                  
+                  // Show section with animation
+                  targetSection.classList.add('visible');
+                }, 400);
+              }
             }
-          }
-        });
+          });
+        }
       });
     };
 
@@ -119,10 +128,7 @@ const usePageTransitions = () => {
       setupPageTransitions();
     }
     
-    // Also set up on route changes for Gatsby
-    const handleRouteChange = () => {
-      setTimeout(setupPageTransitions, 100);
-    };
+    // Note: Route changes are handled by Gatsby's routing system
     
     // Clean up
     return () => {
