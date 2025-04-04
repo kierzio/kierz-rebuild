@@ -12,6 +12,15 @@ const MARCS = () => {
   const [isBlinking, setIsBlinking] = useState(false);
   const messagesEndRef = useRef(null);
   
+  // Determine current page from URL
+  const getCurrentPage = () => {
+    const path = window.location.pathname;
+    if (path.includes('about')) return 'about';
+    if (path.includes('projects')) return 'projects';
+    if (path.includes('contact')) return 'contact';
+    return 'home';
+  };
+  
   // Auto-scroll to the latest message
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -54,22 +63,102 @@ const MARCS = () => {
     setIsLoading(true);
     
     try {
-      // Updated API call to match the Flask endpoint format
-      const response = await axios.get('https://lab.kierz.io/', {
-        params: {
-          question: userMessage.text
-        }
-      });
+      // Get current page context
+      const currentPage = getCurrentPage();
       
-      // Add bot response - Flask returns plain text, not JSON
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          text: response.data || "I'm having trouble connecting to my brain. Please try again later.",
-          isUser: false
+      // Track if we got a response
+      let responseObtained = false;
+      let preferJsonEndpoint = true; // Default to trying JSON endpoint first
+      
+      // Check if browser supports localStorage (for SSR compatibility)
+      if (typeof window !== 'undefined' && window.localStorage) {
+        // Try to read preference from localStorage
+        const endpointKey = 'marcs-preferred-endpoint';
+        const storedPreference = window.localStorage.getItem(endpointKey);
+        if (storedPreference === 'legacy') {
+          preferJsonEndpoint = false;
         }
-      ]);
+      }
+      
+      // Try JSON endpoint first (unless we know legacy works better)
+      if (preferJsonEndpoint) {
+        try {
+          // Try the JSON API endpoint
+          const jsonResponse = await axios.post('https://lab.kierz.io/api/chat', {
+            message: userMessage.text,
+            page: currentPage
+          }, {
+            timeout: 8000 // 8 second timeout
+          });
+          
+          if (jsonResponse.data && jsonResponse.data.success) {
+            // Add bot response from new API
+            setMessages(prev => [
+              ...prev,
+              {
+                id: Date.now() + 1,
+                text: jsonResponse.data.message,
+                isUser: false
+              }
+            ]);
+            
+            // Remember success if we have localStorage
+            if (typeof window !== 'undefined' && window.localStorage) {
+              window.localStorage.setItem('marcs-preferred-endpoint', 'json');
+            }
+            
+            responseObtained = true;
+          }
+        } catch (jsonError) {
+          console.warn('JSON API endpoint failed, will try legacy endpoint');
+          
+          // Remember failure if we have localStorage
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('marcs-preferred-endpoint', 'legacy');
+          }
+        }
+      }
+      
+      // If JSON endpoint failed or wasn't preferred, try legacy endpoint
+      if (!responseObtained) {
+        try {
+          // Fallback to legacy endpoint
+          const response = await axios.get('https://lab.kierz.io/', {
+            params: {
+              question: userMessage.text,
+              // Send page info to legacy endpoint too, in case server handles it
+              page: currentPage
+            },
+            timeout: 8000 // 8 second timeout
+          });
+          
+          // Add bot response - Flask returns plain text, not JSON
+          setMessages(prev => [
+            ...prev,
+            {
+              id: Date.now() + 1,
+              text: response.data || "I'm having trouble connecting to my brain. Please try again later.",
+              isUser: false
+            }
+          ]);
+          
+          // Remember success if we have localStorage
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('marcs-preferred-endpoint', 'legacy');
+          }
+          
+          responseObtained = true;
+        } catch (legacyError) {
+          console.error('Legacy endpoint failed too');
+          
+          // If both failed, reset preference if we have localStorage
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('marcs-preferred-endpoint', 'json');
+          }
+          
+          throw legacyError; // propagate to catch block
+        }
+      }
     } catch (error) {
       console.error('Error communicating with the server:', error);
       
@@ -92,38 +181,49 @@ const MARCS = () => {
       {/* Chat Window */}
       {isOpen && (
         <div 
-          className="w-80 h-96 bg-black/90 rounded-lg mb-4 flex flex-col overflow-hidden shadow-lg shadow-cyan-500/40 border border-cyan-500/50"
-          style={{
-            animation: 'fadeIn 0.3s ease-out'
-          }}
+          className="w-80 sm:w-96 h-[450px] bg-cyber-dark/90 backdrop-blur-md rounded-lg mb-4 flex flex-col overflow-hidden shadow-[0_0_15px_2px_rgba(191,0,255,0.5)] border border-neon-purple/50 animate-fadeIn"
         >
           {/* Chat Header */}
-          <div className="px-3 py-3 bg-cyber-dark/90 flex items-center border-b border-cyan-500/30">
-            <h3 className="m-0 text-cyan-400 text-sm font-medium uppercase tracking-wider font-orbitron">
-              MARCS
-            </h3>
+          <div className="px-4 py-3 bg-gradient-to-r from-neon-purple/20 to-neon-blue/20 flex items-center justify-between border-b border-neon-purple/30">
+            <div className="flex items-center space-x-2">
+              <div className="h-2 w-2 rounded-full bg-neon-purple animate-pulse"></div>
+              <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-neon-purple to-neon-blue font-orbitron text-sm font-bold tracking-wider">
+                MARCS
+              </h3>
+            </div>
+            <div className="text-xs text-neon-blue/70 font-mono">v1.0.3</div>
           </div>
           
           {/* Chat Messages */}
-          <div className="flex-grow p-4 overflow-y-auto flex flex-col gap-3">
+          <div className="flex-grow p-4 overflow-y-auto flex flex-col gap-3 bg-cyber-dark-alt/50 bg-grid-pattern">
             {messages.map(message => (
               <div 
                 key={message.id} 
-                className={`max-w-[80%] p-3 rounded-lg text-white text-sm
+                className={`max-w-[85%] p-3 rounded-lg text-white text-sm animate-fadeIn
                   ${message.isUser 
-                    ? 'bg-cyan-900/30 border border-cyan-500/30 self-end' 
-                    : 'bg-gray-800/70 border border-gray-700/50 self-start'
+                    ? 'bg-neon-blue/10 border border-neon-blue/30 self-end' 
+                    : 'bg-neon-purple/10 border border-neon-purple/30 self-start'
                   }`}
               >
-                {message.text}
+                <div className="flex items-start gap-2">
+                  {!message.isUser && (
+                    <div className="mt-1 w-2 h-2 rounded-full bg-neon-purple/80 flex-shrink-0"></div>
+                  )}
+                  <div className={message.isUser ? 'text-white' : 'text-neon-purple/90'}>
+                    {message.text}
+                  </div>
+                  {message.isUser && (
+                    <div className="mt-1 w-2 h-2 rounded-full bg-neon-blue/80 flex-shrink-0"></div>
+                  )}
+                </div>
               </div>
             ))}
             {isLoading && (
-              <div className="max-w-[80%] p-3 rounded-lg text-white text-sm bg-gray-800/70 border border-gray-700/50 self-start">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-cyan-500 rounded-full" style={{ animation: 'pulse 1s infinite' }}></div>
-                  <div className="w-2 h-2 bg-cyan-500 rounded-full" style={{ animation: 'pulse 1s infinite 0.2s' }}></div>
-                  <div className="w-2 h-2 bg-cyan-500 rounded-full" style={{ animation: 'pulse 1s infinite 0.4s' }}></div>
+              <div className="max-w-[85%] p-3 rounded-lg text-white text-sm bg-neon-purple/10 border border-neon-purple/30 self-start">
+                <div className="flex space-x-2">
+                  <div className="w-2 h-2 bg-neon-purple rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-neon-purple rounded-full animate-pulse delay-100"></div>
+                  <div className="w-2 h-2 bg-neon-purple rounded-full animate-pulse delay-200"></div>
                 </div>
               </div>
             )}
@@ -131,22 +231,25 @@ const MARCS = () => {
           </div>
           
           {/* Chat Input */}
-          <div className="p-3 border-t border-cyan-500/30 bg-cyber-dark/70">
+          <div className="p-3 border-t border-neon-purple/30 bg-gradient-to-r from-neon-purple/10 to-neon-blue/10 backdrop-blur-sm">
             <form onSubmit={handleSubmit} className="flex gap-2">
               <input
                 type="text"
-                placeholder="Ask me anything..."
+                placeholder="Ask MARCS anything..."
                 value={inputValue}
                 onChange={handleInputChange}
                 disabled={isLoading}
-                className="flex-grow px-4 py-2 rounded-full border border-cyan-500/40 bg-gray-900/80 text-white text-sm focus:outline-none focus:border-cyan-400"
+                className="flex-grow px-4 py-2 rounded-full border border-neon-purple/40 bg-cyber-dark text-white placeholder-white/50 text-sm focus:outline-none focus:border-neon-purple focus:shadow-[0_0_8px_rgba(191,0,255,0.5)] transition-all duration-300"
               />
               <button 
                 type="submit" 
                 disabled={isLoading || !inputValue.trim()}
-                className="w-9 h-9 rounded-full flex justify-center items-center bg-cyan-500 text-black disabled:bg-cyan-500/40 disabled:cursor-not-allowed hover:bg-cyan-400 transition-colors"
+                className="w-10 h-10 rounded-full flex justify-center items-center bg-gradient-to-r from-neon-purple to-neon-blue text-white disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-[0_0_10px_rgba(191,0,255,0.7)] transition-all duration-300"
               >
-                →
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
               </button>
             </form>
           </div>
@@ -156,32 +259,39 @@ const MARCS = () => {
       {/* MARCS Icon */}
       <div
         onClick={toggleChat}
-        className="w-14 h-14 rounded-full bg-black flex justify-center items-center cursor-pointer shadow-lg shadow-cyan-500/50 border-2 border-cyan-400 overflow-hidden relative hover:scale-110 transition-transform active:scale-95"
+        className="w-16 h-16 rounded-full bg-gradient-to-br from-cyber-dark to-cyber-dark-alt flex justify-center items-center cursor-pointer shadow-[0_0_15px_rgba(191,0,255,0.6)] border-2 border-neon-purple hover:border-neon-blue overflow-hidden relative hover:scale-110 transition-all duration-300 group"
       >
+        <div className="absolute inset-0 bg-grid-pattern opacity-30"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-neon-purple/20 to-neon-blue/10"></div>
+        
+        {/* Glowing ring */}
+        <div className="absolute inset-0 rounded-full border-4 border-neon-purple/30 group-hover:border-neon-blue/30 group-hover:scale-110 transition-all duration-500"></div>
+        
+        {/* Eye */}
         <div
-          className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-900 relative"
+          className="w-10 h-10 rounded-full bg-gradient-to-br from-neon-purple to-neon-blue relative z-10"
           style={{
             transform: isBlinking || isLoading ? 'scaleY(0.2)' : 'scaleY(1)',
             transition: 'transform 0.2s ease'
           }}
         >
           {/* Eye pupil */}
-          <div className="absolute w-4 h-4 rounded-full bg-white top-2 left-2 shadow-lg"></div>
+          <div className="absolute w-5 h-5 rounded-full bg-white top-2 left-2 shadow-lg"></div>
           
           {/* Eye reflection */}
           <div className="absolute w-2 h-2 rounded-full bg-white/70 top-1 left-1"></div>
         </div>
+        
+        {/* M logo behind the eye */}
+        <div className="absolute font-orbitron text-neon-purple/20 text-4xl font-bold opacity-30">M</div>
       </div>
 
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px) scale(0.9); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
+        .delay-100 {
+          animation-delay: 0.1s;
         }
-        
-        @keyframes pulse {
-          0%, 100% { opacity: 0.5; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1); }
+        .delay-200 {
+          animation-delay: 0.2s;
         }
       `}</style>
     </div>

@@ -2,13 +2,17 @@
  * @type {import('gatsby').GatsbyConfig}
  */
 module.exports = {
-    siteMetadata: {
-      title: "kierz.io",
-      description: "showcasing creative digital experiences at the intersection of technology and design",
-      author: "@kierzio",
-      siteUrl: "https://kierz.io",
-    },
-    plugins: [
+  // Disable SSR to avoid issues with browser APIs
+  flags: {
+    DEV_SSR: false
+  },
+  siteMetadata: {
+    title: "kierz.io",
+    description: "showcasing creative digital experiences at the intersection of technology and design",
+    author: "@kierzio",
+    siteUrl: "https://kierz.io",
+  },
+  plugins: [
       "gatsby-plugin-react-helmet",
       "gatsby-plugin-image",
       "gatsby-plugin-sharp",
