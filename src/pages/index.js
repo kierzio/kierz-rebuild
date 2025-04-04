@@ -6,9 +6,9 @@ import Projects from "../components/Sections/Projects";
 import Contact from "../components/Sections/Contact";
 import "../styles/global.css";
 
-const IndexPage = () => {
+const IndexPage = ({ location }) => {
   return (
-    <Layout>
+    <Layout location={location}>
       <Hero />
       <About />
       <Projects />

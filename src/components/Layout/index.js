@@ -1,7 +1,8 @@
-// src/components/layout/index.js 
+// src/components/Layout/index.js 
 import React from "react";
 import Navigation from "../Navigation";
 import MARCS from '../MARCS';
+import PageAnimation from "../UI/PageAnimation";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -38,13 +39,15 @@ const Footer = () => {
   );
 };
 
-const Layout = ({ children }) => {
+const Layout = ({ children, location }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navigation />
-      <main className="flex-grow">
-        {children}
-      </main>
+      <PageAnimation location={location}>
+        <main className="flex-grow">
+          {children}
+        </main>
+      </PageAnimation>
       {/* eslint-disable-next-line react/jsx-pascal-case */}
       <MARCS />
       <Footer />
