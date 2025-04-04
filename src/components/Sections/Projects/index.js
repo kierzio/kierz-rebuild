@@ -17,13 +17,15 @@ const Projects = () => {
     {
       id: 1,
       title: "Nokia Snake",
-      description: "A nostalgic remake of the classic Nokia Snake game with a cyberpunk twist, featuring retro pixel graphics and modern responsive controls.",
+      description: "A nostalgic remake of the classic Nokia Snake game featuring retro pixel graphics and modern responsive controls.",
       category: "frontend",
       featured: true,
       image: "snake-game.jpg", // Optional future image
       tags: ["Canvas API", "JavaScript", "Game Dev"],
       link: "/game" // Game link
-    },
+    }
+    // Future projects will be added here
+    /*
     {
       id: 2,
       title: "Synthwave Audio Processor",
@@ -74,14 +76,18 @@ const Projects = () => {
       tags: ["WebRTC", "Cryptography", "P2P"],
       link: "#" // Placeholder link
     }
+    */
   ];
   
   // Filter categories
   const categories = [
     { id: "all", label: "All Projects" },
-    { id: "frontend", label: "Frontend" },
+    { id: "frontend", label: "Frontend" }
+    // Additional categories can be added as more projects are added
+    /*
     { id: "backend", label: "Backend" },
     { id: "audio", label: "Audio" }
+    */
   ];
 
   // Filter projects when active filter changes
