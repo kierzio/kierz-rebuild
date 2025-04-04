@@ -191,16 +191,15 @@ const Player = ({ camera }) => {
       jumpCooldown.current--;
     }
     
-    // Check for ground using raycaster
+    // Check for ground using velocity
     if (!isGrounded) {
-      raycaster.current.set(
-        new Vector3(gameState.playerPosition[0], gameState.playerPosition[1], gameState.playerPosition[2]),
-        new Vector3(0, -1, 0)
-      );
+      // If vertical velocity is very small, consider the player grounded
+      if (Math.abs(velocity.current[1]) < 0.1) {
+        setIsGrounded(true);
+      }
       
-      // If the ray hits something within 1.1 units (slightly more than player height/2 + small buffer)
-      // and player is moving downward, consider them grounded
-      if (velocity.current[1] < 0.1 && raycaster.current.raycast) {
+      // Force ground state after initial spawn
+      if (gameState.playerPosition[1] < 1.0) {
         setIsGrounded(true);
       }
     }

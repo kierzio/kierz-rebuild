@@ -15,15 +15,24 @@ const Building = ({ position, size, type }) => {
     material: { friction: 0.1 }
   }));
   
-  // Get building color or texture
-  const color = textures.building && textures.building[type] 
-    ? textures.building[type].color 
-    : getBuildingColor(type);
+  // Get building material
+  let material;
+  
+  // Check if we have textures loaded
+  if (textures && textures.building && textures.building[type]) {
+    if (textures.building[type].texture) {
+      material = <meshStandardMaterial map={textures.building[type].texture} />
+    } else {
+      material = <meshStandardMaterial color={textures.building[type].color} />
+    }
+  } else {
+    material = <meshStandardMaterial color={getBuildingColor(type)} />
+  }
     
   return (
     <mesh ref={ref} position={position} receiveShadow castShadow>
       <boxGeometry args={size} />
-      <meshStandardMaterial color={color} />
+      {material}
     </mesh>
   );
 };
