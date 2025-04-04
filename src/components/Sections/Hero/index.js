@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import ParticleBackground from "../../UI/ParticleBackground";
+import ParticleControls from "../../UI/ParticleControls";
+import CyberNetwork from "../../UI/CyberNetwork";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Hero = () => {
+  const [visualMode, setVisualMode] = useState("particles"); // 'particles' or 'network'
   const [useParticles, setUseParticles] = useState(true);
+  const [interactionMode, setInteractionMode] = useState("repulse");
   const [userName, setUserName] = useState("");
   const [typing, setTyping] = useState(true);
   const [text, setText] = useState("");
@@ -30,6 +35,18 @@ const Hero = () => {
     if (storedName) {
       setUserName(storedName);
       setNameEntered(true);
+    }
+
+    // Load saved interaction mode if available
+    const savedMode = typeof window !== "undefined" ? localStorage.getItem("particleMode") : null;
+    if (savedMode && ["repulse", "attract", "connect", "bubble", "trail"].includes(savedMode)) {
+      setInteractionMode(savedMode);
+    }
+
+    // Load saved visualization mode
+    const savedVisualMode = typeof window !== "undefined" ? localStorage.getItem("visualMode") : null;
+    if (savedVisualMode && ["particles", "network"].includes(savedVisualMode)) {
+      setVisualMode(savedVisualMode);
     }
 
     if (typing) {
@@ -60,9 +77,93 @@ const Hero = () => {
     }
   };
 
+  // Handle interaction mode change
+  const handleModeChange = (mode) => {
+    setInteractionMode(mode);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("particleMode", mode);
+    }
+  };
+
+  // Handle visualization mode toggle
+  const toggleVisualMode = () => {
+    const newMode = visualMode === "particles" ? "network" : "particles";
+    setVisualMode(newMode);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("visualMode", newMode);
+    }
+  };
+
   return (
     <section id="intro" className="h-screen relative flex flex-col items-center justify-center overflow-hidden">
-      {useParticles && <ParticleBackground />}
+      {useParticles && (
+        <>
+          <AnimatePresence mode="wait">
+            {visualMode === "particles" ? (
+              <motion.div 
+                key="particles"
+                className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <ParticleBackground 
+                  interactivityMode={interactionMode}
+                  responsive={true}
+                  speedFactor={1.2}
+                />
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="network"
+                className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <CyberNetwork
+                  nodeCount={120}
+                  nodeColor="#00f0ff"
+                  linkColor="#bf00ff"
+                  interactionStrength={0.2}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          {/* Visualization controls */}
+          <div className="fixed bottom-4 left-4 z-40">
+            <motion.button
+              onClick={toggleVisualMode}
+              className="bg-cyber-dark/80 border border-neon-purple/50 text-neon-purple rounded-full p-3 shadow-lg backdrop-blur-md hover:border-neon-purple hover:text-white transition-all duration-300 focus:outline-none"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              title={`Switch to ${visualMode === "particles" ? "network" : "particles"} visualization`}
+            >
+              {visualMode === "particles" ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              )}
+            </motion.button>
+          </div>
+          
+          {/* Show particle controls only in particles mode */}
+          {visualMode === "particles" && (
+            <ParticleControls 
+              onModeChange={handleModeChange}
+              currentMode={interactionMode}
+              position="bottom-right"
+            />
+          )}
+        </>
+      )}
       
       {/* Grid overlay */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
