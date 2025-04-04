@@ -67,8 +67,8 @@ const Navigation = () => {
               <motion.button
                 key={section}
                 onClick={() => scrollTo(section)}
-                className={`relative text-sm uppercase tracking-wider font-orbitron py-1 transition-colors duration-300 ${
-                  isActive ? 'text-neon-blue font-medium' : 'text-white hover:text-neon-blue/80'
+                className={`navigation-link relative text-sm uppercase tracking-wider font-orbitron py-1 transition-colors duration-300 ${
+                  isActive ? 'text-neon-blue font-medium active' : 'text-white hover:text-neon-blue/80'
                 }`}
                 aria-label={`Navigate to ${section === "intro" ? "home" : section} section`}
                 whileHover={{ 
@@ -133,9 +133,9 @@ const Navigation = () => {
                       scrollTo(section);
                       setMobileMenuOpen(false);
                     }}
-                    className={`text-center text-lg uppercase tracking-wider font-orbitron py-3 px-8 w-full max-w-xs transition-colors duration-300 border-b border-neon-blue/10 ${
+                    className={`navigation-link text-center text-lg uppercase tracking-wider font-orbitron py-3 px-8 w-full max-w-xs transition-colors duration-300 border-b border-neon-blue/10 ${
                       isActive 
-                        ? 'text-neon-blue bg-neon-blue/5 border-b-neon-blue/30' 
+                        ? 'text-neon-blue bg-neon-blue/5 border-b-neon-blue/30 active' 
                         : 'text-white hover:text-neon-blue hover:bg-neon-blue/5'
                     }`}
                     aria-label={`Navigate to ${section === "intro" ? "home" : section} section`}

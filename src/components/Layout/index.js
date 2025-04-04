@@ -3,6 +3,7 @@ import React from "react";
 import Navigation from "../Navigation";
 import MARCS from '../MARCS';
 import PageAnimation from "../UI/PageAnimation";
+import PageTransitions from "../UI/PageTransitions";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -51,6 +52,7 @@ const Layout = ({ children, location }) => {
       {/* eslint-disable-next-line react/jsx-pascal-case */}
       <MARCS />
       <Footer />
+      <PageTransitions />
     </div>
   );
 };
