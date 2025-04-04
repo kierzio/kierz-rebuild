@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import './styles.css';
 
 // Constants for game settings
-const GRID_SIZE = 20; // Grid size (20x20)
-const CELL_SIZE = 20; // Cell size in pixels
+const GRID_SIZE = 30; // Grid size (30x30) - larger playing field
+const CELL_SIZE = 15; // Cell size in pixels - smaller cells to fit on screen
 const INITIAL_SNAKE_LENGTH = 3;
-const INITIAL_SPEED = 150; // Starting speed in ms
-const MIN_SPEED = 50; // Maximum speed (minimum delay)
-const SPEED_INCREMENT = 5; // How much to increase speed with each food
+const INITIAL_SPEED = 200; // Starting speed in ms - slower initial speed
+const MIN_SPEED = 80; // Maximum speed (minimum delay) - not too fast
+const SPEED_INCREMENT = 3; // How much to increase speed with each food - more gradual speed increase
 
 // Directions
 const DIRECTIONS = {
@@ -24,12 +24,13 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   // Game state
   const [snake, setSnake] = useState([]); // Array of snake segments
   const [food, setFood] = useState({ x: 0, y: 0 }); // Food position
-  const [direction, setDirection] = useState(DIRECTIONS.RIGHT); // Initial direction
-  const [nextDirection, setNextDirection] = useState(DIRECTIONS.RIGHT); // Buffer for next direction
+  const [direction, setDirection] = useState(null); // Initial direction is null (waiting for input)
+  const [nextDirection, setNextDirection] = useState(null); // Buffer for next direction
   const [gameSpeed, setGameSpeed] = useState(INITIAL_SPEED); // Game speed (ms between updates)
   const [score, setScore] = useState(0); // Player's score
   const [isPaused, setIsPaused] = useState(false); // Pause state
   const [gameLoopInterval, setGameLoopInterval] = useState(null); // Reference to game loop interval
+  const [waitingForFirstMove, setWaitingForFirstMove] = useState(true); // Wait for first user input
   
   // Initialize game
   useEffect(() => {
@@ -41,28 +42,30 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   
   // Initialize the game state
   const initGame = () => {
-    // Create initial snake (three segments at center, heading right)
+    // Create initial snake (three segments at center, pointing right but not moving)
     const initialSnake = [];
     const centerY = Math.floor(GRID_SIZE / 2);
+    const startX = Math.floor(GRID_SIZE / 4); // Start on the left side of the grid
     
     // Create snake from right to left (head is at the end of the array)
     for (let i = INITIAL_SNAKE_LENGTH - 1; i >= 0; i--) {
-      initialSnake.push({ x: i, y: centerY });
+      initialSnake.push({ x: startX - i, y: centerY });
     }
     
     setSnake(initialSnake);
-    setDirection(DIRECTIONS.RIGHT);
-    setNextDirection(DIRECTIONS.RIGHT);
+    setDirection(null); // No direction yet - waiting for first input
+    setNextDirection(null);
     setGameSpeed(INITIAL_SPEED);
     setScore(0);
+    setWaitingForFirstMove(true);
     
     // Place food at random position
     placeFood(initialSnake);
     
-    // Start game loop
+    // Clear any existing game loop
     if (gameLoopInterval) clearInterval(gameLoopInterval);
-    const interval = setInterval(gameLoop, INITIAL_SPEED);
-    setGameLoopInterval(interval);
+    
+    // No game loop is started yet - will start on first key press
     
     // Call score update callback
     if (onScoreUpdate) onScoreUpdate(0);
@@ -70,7 +73,7 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   
   // Main game loop
   const gameLoop = () => {
-    if (isPaused) return;
+    if (isPaused || !direction) return; // Don't move if paused or no direction yet
     
     setSnake(prevSnake => {
       // Update direction from buffer
@@ -84,8 +87,9 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       };
       
       // Check collision with self
-      const collidesWithSelf = prevSnake.some(segment => 
-        segment.x === newHead.x && segment.y === newHead.y
+      const collidesWithSelf = prevSnake.some((segment, index) => 
+        // Skip the very last segment of the tail since it will move out of the way
+        index < prevSnake.length - 1 && segment.x === newHead.x && segment.y === newHead.y
       );
       
       if (collidesWithSelf) {
@@ -158,33 +162,53 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
         e.preventDefault();
       }
       
+      let newDirection = null;
+      
       switch (e.keyCode) {
         // Arrow UP or W
         case 38:
         case 87:
-          if (direction !== DIRECTIONS.DOWN) setNextDirection(DIRECTIONS.UP);
+          if (direction !== DIRECTIONS.DOWN) newDirection = DIRECTIONS.UP;
           break;
         // Arrow LEFT or A
         case 37:
         case 65:
-          if (direction !== DIRECTIONS.RIGHT) setNextDirection(DIRECTIONS.LEFT);
+          if (direction !== DIRECTIONS.RIGHT) newDirection = DIRECTIONS.LEFT;
           break;
         // Arrow DOWN or S
         case 40:
         case 83:
-          if (direction !== DIRECTIONS.UP) setNextDirection(DIRECTIONS.DOWN);
+          if (direction !== DIRECTIONS.UP) newDirection = DIRECTIONS.DOWN;
           break;
         // Arrow RIGHT or D
         case 39:
         case 68:
-          if (direction !== DIRECTIONS.LEFT) setNextDirection(DIRECTIONS.RIGHT);
+          if (direction !== DIRECTIONS.LEFT) newDirection = DIRECTIONS.RIGHT;
           break;
-        // P = Pause
+        // P = Pause (only if game already started)
         case 80:
-          setIsPaused(!isPaused);
+          if (!waitingForFirstMove) {
+            setIsPaused(!isPaused);
+          }
           break;
         default:
           break;
+      }
+      
+      // If a valid direction was chosen
+      if (newDirection) {
+        setNextDirection(newDirection);
+        
+        // Start game if this is the first move
+        if (waitingForFirstMove) {
+          setDirection(newDirection);
+          setWaitingForFirstMove(false);
+          
+          // Start game loop
+          if (gameLoopInterval) clearInterval(gameLoopInterval);
+          const interval = setInterval(gameLoop, INITIAL_SPEED);
+          setGameLoopInterval(interval);
+        }
       }
     };
     
@@ -195,7 +219,7 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [direction, isPaused]);
+  }, [direction, isPaused, waitingForFirstMove, gameLoopInterval]);
   
   // Render game on canvas
   useEffect(() => {
@@ -264,7 +288,53 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2 - 10);
       ctx.fillText('Press P to resume', canvas.width / 2, canvas.height / 2 + 20);
     }
-  }, [snake, food, isPaused]);
+    
+    // Draw "start game" overlay if waiting for first move
+    if (waitingForFirstMove) {
+      ctx.fillStyle = 'rgba(15, 56, 15, 0.6)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#9bbc0f';
+      ctx.font = '16px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('SNAKE READY!', canvas.width / 2, canvas.height / 2 - 30);
+      ctx.fillText('Press an arrow key or WASD', canvas.width / 2, canvas.height / 2);
+      ctx.fillText('to start the game', canvas.width / 2, canvas.height / 2 + 20);
+      
+      // Draw arrow hints
+      const arrowSize = 15;
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2 + 60;
+      
+      // Up arrow
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - arrowSize * 2);
+      ctx.lineTo(centerX - arrowSize, centerY - arrowSize);
+      ctx.lineTo(centerX + arrowSize, centerY - arrowSize);
+      ctx.fill();
+      
+      // Down arrow
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY + arrowSize * 2);
+      ctx.lineTo(centerX - arrowSize, centerY + arrowSize);
+      ctx.lineTo(centerX + arrowSize, centerY + arrowSize);
+      ctx.fill();
+      
+      // Left arrow
+      ctx.beginPath();
+      ctx.moveTo(centerX - arrowSize * 2, centerY);
+      ctx.lineTo(centerX - arrowSize, centerY - arrowSize);
+      ctx.lineTo(centerX - arrowSize, centerY + arrowSize);
+      ctx.fill();
+      
+      // Right arrow
+      ctx.beginPath();
+      ctx.moveTo(centerX + arrowSize * 2, centerY);
+      ctx.lineTo(centerX + arrowSize, centerY - arrowSize);
+      ctx.lineTo(centerX + arrowSize, centerY + arrowSize);
+      ctx.fill();
+    }
+  }, [snake, food, isPaused, waitingForFirstMove]);
   
   return (
     <div className="snake-game">
@@ -282,25 +352,89 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
         <div className="d-pad">
           <button 
             className="d-pad-btn up" 
-            onClick={() => { if (direction !== DIRECTIONS.DOWN) setNextDirection(DIRECTIONS.UP) }}
+            onClick={() => {
+              if (direction !== DIRECTIONS.DOWN || !direction) {
+                const newDir = DIRECTIONS.UP;
+                setNextDirection(newDir);
+                
+                // Start game if this is the first move
+                if (waitingForFirstMove) {
+                  setDirection(newDir);
+                  setWaitingForFirstMove(false);
+                  
+                  // Start game loop
+                  if (gameLoopInterval) clearInterval(gameLoopInterval);
+                  const interval = setInterval(gameLoop, INITIAL_SPEED);
+                  setGameLoopInterval(interval);
+                }
+              }
+            }}
           >
             ▲
           </button>
           <button 
             className="d-pad-btn left" 
-            onClick={() => { if (direction !== DIRECTIONS.RIGHT) setNextDirection(DIRECTIONS.LEFT) }}
+            onClick={() => {
+              if (direction !== DIRECTIONS.RIGHT || !direction) {
+                const newDir = DIRECTIONS.LEFT;
+                setNextDirection(newDir);
+                
+                // Start game if this is the first move
+                if (waitingForFirstMove) {
+                  setDirection(newDir);
+                  setWaitingForFirstMove(false);
+                  
+                  // Start game loop
+                  if (gameLoopInterval) clearInterval(gameLoopInterval);
+                  const interval = setInterval(gameLoop, INITIAL_SPEED);
+                  setGameLoopInterval(interval);
+                }
+              }
+            }}
           >
             ◄
           </button>
           <button 
             className="d-pad-btn right" 
-            onClick={() => { if (direction !== DIRECTIONS.LEFT) setNextDirection(DIRECTIONS.RIGHT) }}
+            onClick={() => {
+              if (direction !== DIRECTIONS.LEFT || !direction) {
+                const newDir = DIRECTIONS.RIGHT;
+                setNextDirection(newDir);
+                
+                // Start game if this is the first move
+                if (waitingForFirstMove) {
+                  setDirection(newDir);
+                  setWaitingForFirstMove(false);
+                  
+                  // Start game loop
+                  if (gameLoopInterval) clearInterval(gameLoopInterval);
+                  const interval = setInterval(gameLoop, INITIAL_SPEED);
+                  setGameLoopInterval(interval);
+                }
+              }
+            }}
           >
             ►
           </button>
           <button 
             className="d-pad-btn down" 
-            onClick={() => { if (direction !== DIRECTIONS.UP) setNextDirection(DIRECTIONS.DOWN) }}
+            onClick={() => {
+              if (direction !== DIRECTIONS.UP || !direction) {
+                const newDir = DIRECTIONS.DOWN;
+                setNextDirection(newDir);
+                
+                // Start game if this is the first move
+                if (waitingForFirstMove) {
+                  setDirection(newDir);
+                  setWaitingForFirstMove(false);
+                  
+                  // Start game loop
+                  if (gameLoopInterval) clearInterval(gameLoopInterval);
+                  const interval = setInterval(gameLoop, INITIAL_SPEED);
+                  setGameLoopInterval(interval);
+                }
+              }
+            }}
           >
             ▼
           </button>
@@ -308,7 +442,11 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
         
         <button 
           className="pause-btn"
-          onClick={() => setIsPaused(!isPaused)}
+          onClick={() => {
+            if (!waitingForFirstMove) {
+              setIsPaused(!isPaused);
+            }
+          }}
         >
           {isPaused ? 'Resume' : 'Pause'}
         </button>
