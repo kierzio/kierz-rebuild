@@ -9,10 +9,7 @@ import "../styles/global.css";
  * A nostalgic recreation of the classic Snake game
  */
 const GamePage = ({ location }) => {
-  const [gameStarted, setGameStarted] = useState(false);
   const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [autoStart, setAutoStart] = useState(false);
 
   // Handle score updates from the game component
   const handleScoreUpdate = (newScore) => {
@@ -21,22 +18,7 @@ const GamePage = ({ location }) => {
 
   // Handle game over event
   const handleGameOver = (finalScore) => {
-    setGameOver(true);
-    setGameStarted(false);
-  };
-
-  // Start a new game
-  const startNewGame = () => {
-    setGameStarted(true);
-    setGameOver(false);
-    setScore(0);
-    // Set autoStart to true so the Snake game knows it should bypass the waiting screen
-    setAutoStart(true);
-    
-    // Reset autoStart after a short delay
-    setTimeout(() => {
-      setAutoStart(false);
-    }, 1000);
+    console.log("Game over with score:", finalScore);
   };
 
   return (
@@ -69,37 +51,10 @@ const GamePage = ({ location }) => {
           
           {/* Game area */}
           <div className="relative">
-            {gameStarted && !gameOver ? (
-              <SnakeGame 
-                onScoreUpdate={handleScoreUpdate}
-                onGameOver={handleGameOver}
-                autoStart={autoStart}
-              />
-            ) : (
-              <div className="game-menu py-16 px-8 flex flex-col items-center justify-center bg-cyber-dark/90">
-                <div className="mb-8 text-center">
-                  {gameOver ? (
-                    <>
-                      <h2 className="text-3xl font-orbitron text-neon-red mb-4">GAME OVER</h2>
-                      <p className="text-neon-blue mb-2">Final Score: {score}</p>
-                    </>
-                  ) : (
-                    <>
-                      <h2 className="text-3xl font-orbitron text-neon-blue mb-4">NOKIA SNAKE</h2>
-                      <p className="text-gray-300 mb-2">Use arrow keys or WASD to navigate the snake</p>
-                      <p className="text-gray-300">Eat pixels, avoid walls and yourself!</p>
-                    </>
-                  )}
-                </div>
-                
-                <button 
-                  onClick={startNewGame}
-                  className="cyber-btn px-6 py-3 text-lg text-neon-purple bg-cyber-dark border-2 border-neon-purple hover:bg-neon-purple/10 transition-all duration-300 rounded-sm group"
-                >
-                  {gameOver ? "Play Again" : "Start Game"}
-                </button>
-              </div>
-            )}
+            <SnakeGame 
+              onScoreUpdate={handleScoreUpdate}
+              onGameOver={handleGameOver}
+            />
           </div>
           
           {/* Game controls */}
