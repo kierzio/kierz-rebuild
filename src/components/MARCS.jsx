@@ -12,6 +12,15 @@ const MARCS = () => {
   const [isBlinking, setIsBlinking] = useState(false);
   const messagesEndRef = useRef(null);
   
+  // Determine current page from URL
+  const getCurrentPage = () => {
+    const path = window.location.pathname;
+    if (path.includes('about')) return 'about';
+    if (path.includes('projects')) return 'projects';
+    if (path.includes('contact')) return 'contact';
+    return 'home';
+  };
+  
   // Auto-scroll to the latest message
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -54,22 +63,102 @@ const MARCS = () => {
     setIsLoading(true);
     
     try {
-      // API call to match the Flask endpoint format
-      const response = await axios.get('https://lab.kierz.io/', {
-        params: {
-          question: userMessage.text
-        }
-      });
+      // Get current page context
+      const currentPage = getCurrentPage();
       
-      // Add bot response - Flask returns plain text, not JSON
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          text: response.data || "I'm having trouble connecting to my brain. Please try again later.",
-          isUser: false
+      // Track if we got a response
+      let responseObtained = false;
+      let preferJsonEndpoint = true; // Default to trying JSON endpoint first
+      
+      // Check if browser supports localStorage (for SSR compatibility)
+      if (typeof window !== 'undefined' && window.localStorage) {
+        // Try to read preference from localStorage
+        const endpointKey = 'marcs-preferred-endpoint';
+        const storedPreference = window.localStorage.getItem(endpointKey);
+        if (storedPreference === 'legacy') {
+          preferJsonEndpoint = false;
         }
-      ]);
+      }
+      
+      // Try JSON endpoint first (unless we know legacy works better)
+      if (preferJsonEndpoint) {
+        try {
+          // Try the JSON API endpoint
+          const jsonResponse = await axios.post('https://lab.kierz.io/api/chat', {
+            message: userMessage.text,
+            page: currentPage
+          }, {
+            timeout: 8000 // 8 second timeout
+          });
+          
+          if (jsonResponse.data && jsonResponse.data.success) {
+            // Add bot response from new API
+            setMessages(prev => [
+              ...prev,
+              {
+                id: Date.now() + 1,
+                text: jsonResponse.data.message,
+                isUser: false
+              }
+            ]);
+            
+            // Remember success if we have localStorage
+            if (typeof window !== 'undefined' && window.localStorage) {
+              window.localStorage.setItem('marcs-preferred-endpoint', 'json');
+            }
+            
+            responseObtained = true;
+          }
+        } catch (jsonError) {
+          console.warn('JSON API endpoint failed, will try legacy endpoint');
+          
+          // Remember failure if we have localStorage
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('marcs-preferred-endpoint', 'legacy');
+          }
+        }
+      }
+      
+      // If JSON endpoint failed or wasn't preferred, try legacy endpoint
+      if (!responseObtained) {
+        try {
+          // Fallback to legacy endpoint
+          const response = await axios.get('https://lab.kierz.io/', {
+            params: {
+              question: userMessage.text,
+              // Send page info to legacy endpoint too, in case server handles it
+              page: currentPage
+            },
+            timeout: 8000 // 8 second timeout
+          });
+          
+          // Add bot response - Flask returns plain text, not JSON
+          setMessages(prev => [
+            ...prev,
+            {
+              id: Date.now() + 1,
+              text: response.data || "I'm having trouble connecting to my brain. Please try again later.",
+              isUser: false
+            }
+          ]);
+          
+          // Remember success if we have localStorage
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('marcs-preferred-endpoint', 'legacy');
+          }
+          
+          responseObtained = true;
+        } catch (legacyError) {
+          console.error('Legacy endpoint failed too');
+          
+          // If both failed, reset preference if we have localStorage
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('marcs-preferred-endpoint', 'json');
+          }
+          
+          throw legacyError; // propagate to catch block
+        }
+      }
     } catch (error) {
       console.error('Error communicating with the server:', error);
       

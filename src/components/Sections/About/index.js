@@ -33,7 +33,7 @@ const About = () => {
             
             <SectionTransition effect={EFFECTS.FADE_UP} delay={0.3}>
               <p className="text-lg text-gray-300 leading-relaxed">
-                I'm an Information Systems Manager and developer specialising in robust, user-friendly digital infrastructure. My background in economics, particularly behavioural economics, uniquely informs my approach to technology. It helps me understand not just how systems work, but how people interact with them. By combining these insights with technical expertise, I develop solutions that genuinely streamline processes, improve user experience, and drive commercial success—particularly in product information management and e-commerce.
+                I'm an Information Systems Manager and developer specialising in user-friendly, digital infrastructure. My background in economics, particularly behavioural economics, uniquely informs my approach to technology. It helps me understand not just how systems work, but how people interact with them. By combining these insights with technical expertise, I develop solutions that genuinely streamline processes, improve user experience, and drive commercial success.
               </p>
             </SectionTransition>
             
@@ -46,7 +46,7 @@ const About = () => {
             <SectionTransition effect={EFFECTS.FADE_UP} delay={0.5}>
               <p className="text-lg text-gray-300 leading-relaxed">
                 Think of this site as my digital workshop—a space to design, build, and deploy.<br />
-                This project represents my first full-stack development journey: a custom React frontend with Python Flask components running on my own Linux VPS, including backend integrations with a ChatGPT-powered assistant. As I continue developing server-side skills, this site will evolve into a portfolio of practical tools and experiments.
+                This project represents my first full-stack development journey: a custom React frontend with Python Flask components running on a Linux VPS, and a backend integration with a ChatGPT-powered assistant. As I continue developing my skills, this site will evolve into a portfolio of practical tools and experiments.
               </p>
             </SectionTransition>
             

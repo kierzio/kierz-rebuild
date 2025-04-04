@@ -6,13 +6,13 @@ module.exports = {
   flags: {
     DEV_SSR: false
   },
-    siteMetadata: {
-      title: "kierz.io",
-      description: "showcasing creative digital experiences at the intersection of technology and design",
-      author: "@kierzio",
-      siteUrl: "https://kierz.io",
-    },
-    plugins: [
+  siteMetadata: {
+    title: "kierz.io",
+    description: "showcasing creative digital experiences at the intersection of technology and design",
+    author: "@kierzio",
+    siteUrl: "https://kierz.io",
+  },
+  plugins: [
       "gatsby-plugin-react-helmet",
       "gatsby-plugin-image",
       "gatsby-plugin-sharp",
