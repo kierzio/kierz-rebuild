@@ -16,9 +16,11 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   const moveIntervalRef = useRef(null);
   const scoreRef = useRef(0);
   const gameActiveRef = useRef(false);
+  const highScoreRef = useRef(0);
   
   // Use state for UI updates only
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   
@@ -30,6 +32,13 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
     
     canvas.width = GRID_SIZE * CELL_SIZE;
     canvas.height = GRID_SIZE * CELL_SIZE;
+    
+    // Load high score from localStorage
+    const savedHighScore = localStorage.getItem('snakeHighScore');
+    if (savedHighScore) {
+      highScoreRef.current = parseInt(savedHighScore);
+      setHighScore(highScoreRef.current);
+    }
     
     // Place food randomly
     randomizeFood();
@@ -136,7 +145,17 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   const handleGameOver = () => {
     stopGame();
     setGameOver(true);
-    onGameOver && onGameOver(scoreRef.current);
+    
+    // Check for new high score
+    const currentScore = scoreRef.current;
+    if (currentScore > highScoreRef.current) {
+      highScoreRef.current = currentScore;
+      setHighScore(currentScore);
+      // Save to localStorage
+      localStorage.setItem('snakeHighScore', currentScore.toString());
+    }
+    
+    onGameOver && onGameOver(currentScore);
   };
   
   // Draw the game state
@@ -215,10 +234,23 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       ctx.fillStyle = '#9bbc0f';
       ctx.font = '20px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 20);
-      ctx.fillText(`Score: ${scoreRef.current}`, canvas.width / 2, canvas.height / 2 + 10);
+      ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 40);
+      
+      // Show score
+      ctx.fillText(`Score: ${scoreRef.current}`, canvas.width / 2, canvas.height / 2 - 10);
+      
+      // Show high score
+      ctx.fillText(`High Score: ${highScoreRef.current}`, canvas.width / 2, canvas.height / 2 + 20);
+      
+      // Show new high score message if applicable
+      if (scoreRef.current >= highScoreRef.current && scoreRef.current > 0) {
+        ctx.fillStyle = '#ff9bbc'; // Highlight color for new high score
+        ctx.fillText('NEW HIGH SCORE!', canvas.width / 2, canvas.height / 2 + 50);
+      }
+      
+      ctx.fillStyle = '#9bbc0f';
       ctx.font = '16px monospace';
-      ctx.fillText('Press SPACE to restart', canvas.width / 2, canvas.height / 2 + 40);
+      ctx.fillText('Press SPACE to restart', canvas.width / 2, canvas.height / 2 + 80);
     }
   };
   
@@ -318,6 +350,14 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   
   return (
     <div className="snake-game">
+      <div className="game-stats flex justify-between items-center w-full mb-2 px-2">
+        <div className="score font-mono text-neon-blue">
+          Score: <span className="text-neon-purple">{score}</span>
+        </div>
+        <div className="high-score font-mono text-neon-blue">
+          High Score: <span className="text-neon-purple">{highScore}</span>
+        </div>
+      </div>
       <canvas 
         ref={canvasRef} 
         className="game-canvas"

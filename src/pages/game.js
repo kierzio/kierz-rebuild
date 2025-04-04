@@ -44,8 +44,9 @@ const GamePage = ({ location }) => {
               <p className="text-neon-blue text-sm">Retro Edition</p>
             </div>
             
-            <div className="score-display px-4 py-2 bg-cyber-light/20 border border-neon-purple/50 rounded-sm">
-              <span className="font-orbitron text-neon-purple">Score: {score}</span>
+            <div className="px-4 py-2 opacity-0">
+              {/* Empty div to maintain layout balance */}
+              <span className="font-orbitron">Placeholder</span>
             </div>
           </div>
           
