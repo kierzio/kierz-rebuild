@@ -22,38 +22,99 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
   const canvasRef = useRef(null);
   
   // Game state
-  const [snake, setSnake] = useState([]); // Array of snake segments
-  const [food, setFood] = useState({ x: 0, y: 0 }); // Food position
-  const [direction, setDirection] = useState(null); // Initial direction is null (waiting for input)
-  const [nextDirection, setNextDirection] = useState(null); // Buffer for next direction
-  const [gameSpeed, setGameSpeed] = useState(INITIAL_SPEED); // Game speed (ms between updates)
-  const [score, setScore] = useState(0); // Player's score
-  const [isPaused, setIsPaused] = useState(false); // Pause state
-  const [gameLoopInterval, setGameLoopInterval] = useState(null); // Reference to game loop interval
-  const [waitingForFirstMove, setWaitingForFirstMove] = useState(true); // Wait for first user input
+  const [snake, setSnake] = useState([]);
+  const [food, setFood] = useState({ x: 0, y: 0 });
+  const [direction, setDirection] = useState(null);
+  const [nextDirection, setNextDirection] = useState(null);
+  const [gameSpeed, setGameSpeed] = useState(INITIAL_SPEED);
+  const [score, setScore] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [waitingForFirstMove, setWaitingForFirstMove] = useState(true);
   
   // Initialize game
   useEffect(() => {
     initGame();
+    
+    // Cleanup on unmount
     return () => {
-      if (gameLoopInterval) clearInterval(gameLoopInterval);
+      stopGameLoop();
     };
   }, []);
-
-  // Handle autoStart prop change
-  useEffect(() => {
-    if (autoStart && waitingForFirstMove) {
-      // Auto-start the game with right direction
-      setDirection(DIRECTIONS.RIGHT);
-      setNextDirection(DIRECTIONS.RIGHT);
-      setWaitingForFirstMove(false);
-      
-      // Start game loop
-      if (gameLoopInterval) clearInterval(gameLoopInterval);
-      const interval = setInterval(gameLoop, INITIAL_SPEED);
-      setGameLoopInterval(interval);
+  
+  // Stop the game loop
+  const stopGameLoop = () => {
+    const loopId = sessionStorage.getItem('gameLoopId');
+    if (loopId) {
+      clearInterval(parseInt(loopId));
+      sessionStorage.removeItem('gameLoopId');
     }
-  }, [autoStart, waitingForFirstMove, gameLoopInterval]);
+  };
+  
+  // Start the game loop
+  const startGameLoop = (speed) => {
+    stopGameLoop(); // Ensure any existing loop is stopped
+    
+    const interval = setInterval(() => {
+      if (isPaused) return;
+      
+      setSnake(prevSnake => {
+        if (!direction) return prevSnake; // Don't move if no direction
+        
+        // Create new head in the current direction
+        const head = prevSnake[prevSnake.length - 1];
+        const newHead = {
+          x: (head.x + direction.x + GRID_SIZE) % GRID_SIZE, // Wrap around grid
+          y: (head.y + direction.y + GRID_SIZE) % GRID_SIZE  // Wrap around grid
+        };
+        
+        // Check collision with self
+        const collidesWithSelf = prevSnake.some((segment, index) => 
+          // Skip the very last segment of the tail since it will move out of the way
+          index < prevSnake.length - 1 && segment.x === newHead.x && segment.y === newHead.y
+        );
+        
+        if (collidesWithSelf) {
+          // Game over
+          endGame();
+          return prevSnake;
+        }
+        
+        // Create new snake array
+        const newSnake = [...prevSnake, newHead];
+        
+        // Check collision with food
+        if (newHead.x === food.x && newHead.y === food.y) {
+          // Snake grows (don't remove tail)
+          // Update score
+          const newScore = score + 1;
+          setScore(newScore);
+          
+          // Call score update callback
+          if (onScoreUpdate) onScoreUpdate(newScore);
+          
+          // Place new food
+          placeFood(newSnake);
+          
+          // Increase speed
+          const newSpeed = Math.max(MIN_SPEED, gameSpeed - SPEED_INCREMENT);
+          setGameSpeed(newSpeed);
+          
+          // Restart loop with new speed
+          stopGameLoop();
+          setTimeout(() => startGameLoop(newSpeed), 0);
+          
+          // Return new snake with head added
+          return newSnake;
+        } else {
+          // Snake moves (remove tail)
+          return newSnake.slice(1);
+        }
+      });
+    }, speed || gameSpeed);
+    
+    // Store interval ID in session storage to ensure it survives re-renders
+    sessionStorage.setItem('gameLoopId', interval.toString());
+  };
   
   // Initialize the game state
   const initGame = () => {
@@ -73,77 +134,16 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
     setGameSpeed(INITIAL_SPEED);
     setScore(0);
     setWaitingForFirstMove(true);
+    setIsPaused(false);
     
     // Place food at random position
     placeFood(initialSnake);
     
     // Clear any existing game loop
-    if (gameLoopInterval) clearInterval(gameLoopInterval);
-    
-    // No game loop is started yet - will start on first key press
+    stopGameLoop();
     
     // Call score update callback
     if (onScoreUpdate) onScoreUpdate(0);
-  };
-  
-  // Main game loop
-  const gameLoop = () => {
-    if (isPaused || !direction) return; // Don't move if paused or no direction yet
-    
-    setSnake(prevSnake => {
-      // Update direction from buffer
-      setDirection(nextDirection);
-      
-      // Create new head in the current direction
-      const head = prevSnake[prevSnake.length - 1];
-      const newHead = {
-        x: (head.x + nextDirection.x + GRID_SIZE) % GRID_SIZE, // Wrap around grid
-        y: (head.y + nextDirection.y + GRID_SIZE) % GRID_SIZE  // Wrap around grid
-      };
-      
-      // Check collision with self
-      const collidesWithSelf = prevSnake.some((segment, index) => 
-        // Skip the very last segment of the tail since it will move out of the way
-        index < prevSnake.length - 1 && segment.x === newHead.x && segment.y === newHead.y
-      );
-      
-      if (collidesWithSelf) {
-        // Game over
-        endGame();
-        return prevSnake;
-      }
-      
-      // Create new snake array
-      const newSnake = [...prevSnake, newHead];
-      
-      // Check collision with food
-      if (newHead.x === food.x && newHead.y === food.y) {
-        // Snake grows (don't remove tail)
-        // Update score
-        const newScore = score + 1;
-        setScore(newScore);
-        
-        // Call score update callback
-        if (onScoreUpdate) onScoreUpdate(newScore);
-        
-        // Place new food
-        placeFood(newSnake);
-        
-        // Increase speed
-        const newSpeed = Math.max(MIN_SPEED, gameSpeed - SPEED_INCREMENT);
-        setGameSpeed(newSpeed);
-        
-        if (gameLoopInterval) clearInterval(gameLoopInterval);
-        const interval = setInterval(gameLoop, newSpeed);
-        setGameLoopInterval(interval);
-        
-        // Return new snake with head added
-        return newSnake;
-      } else {
-        // Snake moves (remove tail)
-        return newSnake.slice(1);
-      }
-    });
   };
   
   // Place food at random position
@@ -165,9 +165,25 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
   
   // End game
   const endGame = () => {
-    if (gameLoopInterval) clearInterval(gameLoopInterval);
+    stopGameLoop();
     if (onGameOver) onGameOver(score);
   };
+  
+  // Start the game with the specified direction
+  const startGameWithDirection = (newDir) => {
+    setDirection(newDir);
+    setNextDirection(newDir);
+    setWaitingForFirstMove(false);
+    startGameLoop(INITIAL_SPEED);
+  };
+  
+  // Handle autoStart prop change
+  useEffect(() => {
+    if (autoStart && waitingForFirstMove) {
+      console.log("Auto-starting game!");
+      startGameWithDirection(DIRECTIONS.RIGHT);
+    }
+  }, [autoStart, waitingForFirstMove]);
   
   // Handle key press for game controls
   useEffect(() => {
@@ -216,13 +232,10 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
         
         // Start game if this is the first move
         if (waitingForFirstMove) {
+          startGameWithDirection(newDirection);
+        } else {
+          // Update direction immediately
           setDirection(newDirection);
-          setWaitingForFirstMove(false);
-          
-          // Start game loop
-          if (gameLoopInterval) clearInterval(gameLoopInterval);
-          const interval = setInterval(gameLoop, INITIAL_SPEED);
-          setGameLoopInterval(interval);
         }
       }
     };
@@ -234,7 +247,7 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [direction, isPaused, waitingForFirstMove, gameLoopInterval]);
+  }, [direction, isPaused, waitingForFirstMove]);
   
   // Render game on canvas
   useEffect(() => {
@@ -370,17 +383,11 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
             onClick={() => {
               if (direction !== DIRECTIONS.DOWN || !direction) {
                 const newDir = DIRECTIONS.UP;
-                setNextDirection(newDir);
-                
-                // Start game if this is the first move
                 if (waitingForFirstMove) {
+                  startGameWithDirection(newDir);
+                } else {
                   setDirection(newDir);
-                  setWaitingForFirstMove(false);
-                  
-                  // Start game loop
-                  if (gameLoopInterval) clearInterval(gameLoopInterval);
-                  const interval = setInterval(gameLoop, INITIAL_SPEED);
-                  setGameLoopInterval(interval);
+                  setNextDirection(newDir);
                 }
               }
             }}
@@ -392,17 +399,11 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
             onClick={() => {
               if (direction !== DIRECTIONS.RIGHT || !direction) {
                 const newDir = DIRECTIONS.LEFT;
-                setNextDirection(newDir);
-                
-                // Start game if this is the first move
                 if (waitingForFirstMove) {
+                  startGameWithDirection(newDir);
+                } else {
                   setDirection(newDir);
-                  setWaitingForFirstMove(false);
-                  
-                  // Start game loop
-                  if (gameLoopInterval) clearInterval(gameLoopInterval);
-                  const interval = setInterval(gameLoop, INITIAL_SPEED);
-                  setGameLoopInterval(interval);
+                  setNextDirection(newDir);
                 }
               }
             }}
@@ -414,17 +415,11 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
             onClick={() => {
               if (direction !== DIRECTIONS.LEFT || !direction) {
                 const newDir = DIRECTIONS.RIGHT;
-                setNextDirection(newDir);
-                
-                // Start game if this is the first move
                 if (waitingForFirstMove) {
+                  startGameWithDirection(newDir);
+                } else {
                   setDirection(newDir);
-                  setWaitingForFirstMove(false);
-                  
-                  // Start game loop
-                  if (gameLoopInterval) clearInterval(gameLoopInterval);
-                  const interval = setInterval(gameLoop, INITIAL_SPEED);
-                  setGameLoopInterval(interval);
+                  setNextDirection(newDir);
                 }
               }
             }}
@@ -436,17 +431,11 @@ const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
             onClick={() => {
               if (direction !== DIRECTIONS.UP || !direction) {
                 const newDir = DIRECTIONS.DOWN;
-                setNextDirection(newDir);
-                
-                // Start game if this is the first move
                 if (waitingForFirstMove) {
+                  startGameWithDirection(newDir);
+                } else {
                   setDirection(newDir);
-                  setWaitingForFirstMove(false);
-                  
-                  // Start game loop
-                  if (gameLoopInterval) clearInterval(gameLoopInterval);
-                  const interval = setInterval(gameLoop, INITIAL_SPEED);
-                  setGameLoopInterval(interval);
+                  setNextDirection(newDir);
                 }
               }
             }}
