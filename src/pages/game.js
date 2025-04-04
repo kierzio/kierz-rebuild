@@ -12,6 +12,7 @@ const GamePage = ({ location }) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [autoStart, setAutoStart] = useState(false);
 
   // Handle score updates from the game component
   const handleScoreUpdate = (newScore) => {
@@ -21,6 +22,7 @@ const GamePage = ({ location }) => {
   // Handle game over event
   const handleGameOver = (finalScore) => {
     setGameOver(true);
+    setGameStarted(false);
   };
 
   // Start a new game
@@ -28,6 +30,13 @@ const GamePage = ({ location }) => {
     setGameStarted(true);
     setGameOver(false);
     setScore(0);
+    // Set autoStart to true so the Snake game knows it should bypass the waiting screen
+    setAutoStart(true);
+    
+    // Reset autoStart after a short delay
+    setTimeout(() => {
+      setAutoStart(false);
+    }, 1000);
   };
 
   return (
@@ -64,6 +73,7 @@ const GamePage = ({ location }) => {
               <SnakeGame 
                 onScoreUpdate={handleScoreUpdate}
                 onGameOver={handleGameOver}
+                autoStart={autoStart}
               />
             ) : (
               <div className="game-menu py-16 px-8 flex flex-col items-center justify-center bg-cyber-dark/90">

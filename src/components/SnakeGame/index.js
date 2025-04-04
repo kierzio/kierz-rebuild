@@ -17,7 +17,7 @@ const DIRECTIONS = {
   RIGHT: { x: 1, y: 0 }
 };
 
-const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
+const SnakeGame = ({ onScoreUpdate, onGameOver, autoStart = false }) => {
   // Game canvas reference
   const canvasRef = useRef(null);
   
@@ -39,6 +39,21 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       if (gameLoopInterval) clearInterval(gameLoopInterval);
     };
   }, []);
+
+  // Handle autoStart prop change
+  useEffect(() => {
+    if (autoStart && waitingForFirstMove) {
+      // Auto-start the game with right direction
+      setDirection(DIRECTIONS.RIGHT);
+      setNextDirection(DIRECTIONS.RIGHT);
+      setWaitingForFirstMove(false);
+      
+      // Start game loop
+      if (gameLoopInterval) clearInterval(gameLoopInterval);
+      const interval = setInterval(gameLoop, INITIAL_SPEED);
+      setGameLoopInterval(interval);
+    }
+  }, [autoStart, waitingForFirstMove, gameLoopInterval]);
   
   // Initialize the game state
   const initGame = () => {
