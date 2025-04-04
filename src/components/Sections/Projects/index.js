@@ -16,12 +16,12 @@ const Projects = () => {
   const projects = [
     {
       id: 1,
-      title: "Night City GTA",
-      description: "A cyberpunk GTA-style game built with Three.js featuring an open world environment with neon-lit streets and interactive gameplay.",
+      title: "Nokia Snake",
+      description: "A nostalgic remake of the classic Nokia Snake game with a cyberpunk twist, featuring retro pixel graphics and modern responsive controls.",
       category: "frontend",
       featured: true,
-      image: "gta-game.jpg", // Optional future image
-      tags: ["Three.js", "WebGL", "JavaScript"],
+      image: "snake-game.jpg", // Optional future image
+      tags: ["Canvas API", "JavaScript", "Game Dev"],
       link: "/game" // Game link
     },
     {
@@ -276,7 +276,7 @@ const Projects = () => {
                       to="/game"
                       className="cyber-btn relative overflow-hidden py-2 px-4 text-sm text-neon-purple border border-neon-purple/50 hover:bg-neon-purple/10 transition-all duration-300 rounded-sm group"
                     >
-                      <span className="relative z-10">Play Game</span>
+                      <span className="relative z-10">Play Snake</span>
                       
                       {/* Hover effects */}
                       <span className="absolute inset-0 h-full w-0 bg-neon-purple/10 transition-all duration-300 group-hover:w-full"></span>

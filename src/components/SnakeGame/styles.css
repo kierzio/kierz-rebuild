@@ -1,0 +1,102 @@
+/* Snake Game Styles */
+.snake-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background-color: #0f0f13;
+  width: 100%;
+}
+
+.game-canvas {
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+  image-rendering: pixelated; /* Pixelated rendering for retro feel */
+}
+
+/* Mobile controls */
+.mobile-controls {
+  display: none; /* Hide on desktop */
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.d-pad {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+.d-pad-btn {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(191, 0, 255, 0.2);
+  border: 1px solid rgba(191, 0, 255, 0.5);
+  color: #00f0ff;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.d-pad-btn:active {
+  background-color: rgba(191, 0, 255, 0.4);
+  transform: scale(0.95);
+}
+
+.d-pad-btn.up {
+  top: 0;
+  left: 50px;
+  border-radius: 6px 6px 0 0;
+}
+
+.d-pad-btn.left {
+  top: 50px;
+  left: 0;
+  border-radius: 6px 0 0 6px;
+}
+
+.d-pad-btn.right {
+  top: 50px;
+  left: 100px;
+  border-radius: 0 6px 6px 0;
+}
+
+.d-pad-btn.down {
+  top: 100px;
+  left: 50px;
+  border-radius: 0 0 6px 6px;
+}
+
+.pause-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  color: #00f0ff;
+  border-radius: 4px;
+  font-family: 'Orbitron', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pause-btn:hover {
+  background-color: rgba(0, 240, 255, 0.3);
+}
+
+/* Show mobile controls on small screens */
+@media (max-width: 768px) {
+  .mobile-controls {
+    display: block;
+  }
+  
+  .game-canvas {
+    max-width: 300px; /* Smaller game area on mobile */
+  }
+}
