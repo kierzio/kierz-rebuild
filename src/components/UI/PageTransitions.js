@@ -128,10 +128,7 @@ const usePageTransitions = () => {
       setupPageTransitions();
     }
     
-    // Also set up on route changes for Gatsby
-    const handleRouteChange = () => {
-      setTimeout(setupPageTransitions, 100);
-    };
+    // Note: Route changes are handled by Gatsby's routing system
     
     // Clean up
     return () => {
