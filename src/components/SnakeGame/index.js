@@ -240,8 +240,8 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       ctx.fillText('Press P to resume', canvas.width / 2, canvas.height / 2 + 20);
     }
     
-    // Draw game over overlay
-    if (gameOver) {
+    // Draw game over overlay - ONLY if gameOver state is true
+    if (gameOver === true) { // Explicit check to ensure we only show this when truly in game over state
       ctx.fillStyle = 'rgba(15, 56, 15, 0.8)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
@@ -265,6 +265,11 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
       ctx.fillStyle = '#9bbc0f';
       ctx.font = '16px monospace';
       ctx.fillText('Press SPACE to restart', canvas.width / 2, canvas.height / 2 + 80);
+    } else {
+      // Make absolutely sure we don't leave any old overlay when game is not over
+      if (gameActiveRef.current) {
+        requestAnimationFrame(gameLoop);
+      }
     }
   };
   
@@ -276,14 +281,35 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
         e.preventDefault();
       }
       
-          // Restart game on SPACE when game over
+      // Restart game on SPACE when game over
       if (e.keyCode === 32) { // Space bar
         if (gameOver) {
-          console.log("Restarting game with space bar");
-          // Make sure we reset the game state immediately
-          startGame();
-          // Force redraw
-          requestAnimationFrame(drawGame);
+          console.log("Restarting game with space bar - complete restart");
+          
+          // COMPLETELY RESET EVERYTHING
+          stopGame();
+          
+          // Reset game state
+          gameActiveRef.current = true;
+          snakeRef.current = [{ x: 3, y: 10 }, { x: 2, y: 10 }, { x: 1, y: 10 }];
+          directionRef.current = { x: 1, y: 0 };
+          scoreRef.current = 0;
+          
+          // Reset react state
+          setGameOver(false);
+          setScore(0);
+          
+          // Regenerate food
+          randomizeFood();
+          
+          // Force redraw WITHOUT game over overlay
+          requestAnimationFrame(() => {
+            drawGame();
+            
+            // Start fresh game loop
+            moveIntervalRef.current = setInterval(gameLoop, MOVE_INTERVAL);
+          });
+          
           return;
         }
       }
@@ -344,9 +370,31 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   const handleDirectionButtonClick = (dx, dy) => {
     // Special handling for game over state
     if (gameOver) {
-      console.log("Restarting game with direction button");
-      startGame(); // Just restart the game on any direction press
-      requestAnimationFrame(drawGame); // Force immediate redraw
+      console.log("Restarting game with direction button - complete restart");
+      
+      // COMPLETELY RESET EVERYTHING
+      stopGame();
+      
+      // Reset game state
+      gameActiveRef.current = true;
+      snakeRef.current = [{ x: 3, y: 10 }, { x: 2, y: 10 }, { x: 1, y: 10 }];
+      directionRef.current = { x: dx, y: dy }; // Use the direction button pressed
+      scoreRef.current = 0;
+      
+      // Reset react state
+      setGameOver(false);
+      setScore(0);
+      
+      // Regenerate food
+      randomizeFood();
+      
+      // Force redraw WITHOUT game over overlay
+      requestAnimationFrame(() => {
+        drawGame();
+        
+        // Start fresh game loop
+        moveIntervalRef.current = setInterval(gameLoop, MOVE_INTERVAL);
+      });
       return;
     }
     
@@ -369,9 +417,31 @@ const SnakeGame = ({ onScoreUpdate, onGameOver }) => {
   const togglePause = () => {
     if (gameOver) {
       // Use the pause button as a "restart" button when game is over
-      console.log("Restarting game with button");
-      startGame();
-      requestAnimationFrame(drawGame); // Force immediate redraw
+      console.log("Restarting game with button - complete restart");
+      
+      // COMPLETELY RESET EVERYTHING
+      stopGame();
+      
+      // Reset game state
+      gameActiveRef.current = true;
+      snakeRef.current = [{ x: 3, y: 10 }, { x: 2, y: 10 }, { x: 1, y: 10 }];
+      directionRef.current = { x: 1, y: 0 };
+      scoreRef.current = 0;
+      
+      // Reset react state
+      setGameOver(false);
+      setScore(0);
+      
+      // Regenerate food
+      randomizeFood();
+      
+      // Force redraw WITHOUT game over overlay
+      requestAnimationFrame(() => {
+        drawGame();
+        
+        // Start fresh game loop
+        moveIntervalRef.current = setInterval(gameLoop, MOVE_INTERVAL);
+      });
     } else {
       setIsPaused(!isPaused);
     }
